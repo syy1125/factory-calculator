@@ -1,41 +1,36 @@
-import { solveFactory } from "../solver/factory";
-import { solveLinearOptimization } from "../solver/linearOptimization";
-
 function main() {
+  const solver = require('javascript-lp-solver/src/solver')
 
-  // const solution = solveFactory(
-  //   [{ id: "coal" }, { id: "coal-coke" }, { id: "sulfur" }],
-  //   [
-  //     {
-  //       id: "import-coal",
-  //       inputs: {},
-  //       outputs: { coal: 1 },
-  //       cost: 0.5,
-  //     },
-  //     {
-  //       id: "import-sulfur",
-  //       inputs: {},
-  //       outputs: { sulfur: 1 },
-  //       cost: 2,
-  //     },
-  //     {
-  //       id: "coke-t1",
-  //       inputs: { coal: 200 },
-  //       outputs: { "coal-coke": 180 },
-  //       cost: 0,
-  //     },
-  //     {
-  //       id: "coke-t2",
-  //       inputs: { coal: 200 },
-  //       outputs: { "coal-coke": 165, sulfur: 15 },
-  //       cost: 0,
-  //     },
-  //   ],
-  //   {},
-  //   { "coal-coke": 360 }
-  // );
+  const results = solver.Solve({
+    optimize: "cost",
+    opType: "min",
+    constraints: {
+      coal: { min: 0 },
+      "coal-coke": { min: 360 },
+      sulfur: { min: 0 },
+    },
+    variables: {
+      "import-coal": {
+        coal: 1,
+        cost: 0.5,
+      },
+      "import-sulfur": {
+        sulfur: 1,
+        cost: 2,
+      },
+      "coke-t1": {
+        coal: -200,
+        "coal-coke": 180,
+      },
+      "coke-t2": {
+        coal: -200,
+        "coal-coke": 165,
+        sulfur: 15,
+      },
+    },
+  });
 
-  // console.log(solution);
+  console.log(results);
 }
 
 main();
