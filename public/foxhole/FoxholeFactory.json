@@ -1,0 +1,452 @@
+{
+  "name": "Foxhole",
+  "resources": {
+    "coal": {
+      "name": "Coal",
+      "icon": "/foxhole/Coal.png",
+      "value": 0.5
+    },
+    "salvage": {
+      "name": "Salvage",
+      "shortName": "Scrap",
+      "icon": "/foxhole/Salvage.png",
+      "value": 1
+    },
+    "sulfur": {
+      "name": "Sulfur",
+      "icon": "/foxhole/Sulfur.png",
+      "value": 2
+    },
+    "components": {
+      "name": "Components",
+      "shortName": "Comps",
+      "icon": "/foxhole/Components.png",
+      "value": 4
+    },
+    "coal-coke": {
+      "name": "Coal Coke",
+      "shortName": "Coke",
+      "icon": "/foxhole/Coke.png",
+      "value": 0.5
+    },
+    "concrete": {
+      "name": "Concrete Materials",
+      "shortName": "Conc",
+      "icon": "/foxhole/Concrete.png",
+      "value": 80
+    },
+    "water": {
+      "name": "Water",
+      "value": 1
+    },
+    "oil": {
+      "name": "Oil",
+      "icon": "/foxhole/Oil.png",
+      "value": 1
+    },
+    "petrol": {
+      "name": "Petrol",
+      "icon": "/foxhole/Petrol.png",
+      "value": 1
+    },
+    "heavy-oil": {
+      "name": "Heavy Oil",
+      "shortName": "HOil",
+      "value": 2
+    },
+    "enriched-oil": {
+      "name": "Enriched Oil",
+      "shortName": "EOil",
+      "value": 10
+    },
+    "rare-metal": {
+      "name": "Rare Metal",
+      "shortName": "RMet",
+      "value": 20
+    },
+    "rare-alloys": {
+      "name": "Rare Alloys",
+      "shortName": "RAlloy",
+      "value": 200
+    },
+    "construction-materials": {
+      "name": "Construction Materials",
+      "shortName": "CMats",
+      "value": 5
+    },
+    "assembly-materials-1": {
+      "name": "Assembly Materials I",
+      "shortName": "AssMat1",
+      "value": 20
+    },
+    "assembly-materials-2": {
+      "name": "Assembly Materials II",
+      "shortName": "AssMat2",
+      "value": 20
+    },
+    "processed-construction-materials": {
+      "name": "Processed Construction Materials",
+      "shortName": "PCMats",
+      "value": 80
+    },
+    "assembly-materials-3": {
+      "name": "Assembly Materials III",
+      "shortName": "AssMat3",
+      "value": 80
+    },
+    "assembly-materials-4": {
+      "name": "Assembly Materials IV",
+      "shortName": "AssMat4",
+      "value": 160
+    },
+    "steel-construction-materials": {
+      "name": "Steel Construction Materials",
+      "shortName": "SCMat",
+      "value": 400
+    },
+    "assembly-materials-5": {
+      "name": "Assembly Materials V",
+      "shortName": "AssMat5",
+      "value": 1600
+    },
+    "sandbag": {
+      "name": "Sandbag",
+      "value": 5
+    },
+    "barbed-wire": {
+      "name": "Barbed Wire",
+      "value": 5
+    }
+  },
+  "recipeGroups": [
+    {
+      "id": "coal-refinery",
+      "name": "Coal Refinery"
+    },
+    {
+      "id": "coal-refinery-coke-furnace",
+      "name": "Coal Refinery (Coke Furnace)"
+    },
+    {
+      "id": "coal-refinery-coal-liquefier",
+      "name": "Coal Refinery (Coal Liquefier)"
+    },
+    {
+      "id": "coal-refinery-advanced-coal-liquefier",
+      "name": "Coal Refinery (Advanced Coal Liquefier)"
+    },
+    {
+      "id": "oil-refinery",
+      "name": "Oil Refinery"
+    },
+    {
+      "id": "oil-refinery-reformer",
+      "name": "Oil Refinery (Reformer)"
+    },
+    {
+      "id": "oil-refinery-cracking-unit",
+      "name": "Oil Refinery (Cracking Unit)"
+    },
+    {
+      "id": "oil-refinery-petrochemical-plant",
+      "name": "Oil Refinery (Petrochemical Plant)"
+    },
+    {
+      "id": "materials-factory",
+      "name": "Materials Factory"
+    },
+    {
+      "id": "materials-factory-forge",
+      "name": "Materials Factory (Forge)"
+    },
+    {
+      "id": "materials-factory-metal-press",
+      "name": "Materials Factory (Metal Press)"
+    },
+    {
+      "id": "materials-factory-assembly-bay",
+      "name": "Materials Factory (Assembly Bay)"
+    },
+    {
+      "id": "materials-factory-smelter",
+      "name": "Materials Factory (Smelter)"
+    },
+    {
+      "id": "metalworks-factory",
+      "name": "Metalworks Factory"
+    },
+    {
+      "id": "metalworks-factory-recycler",
+      "name": "Metalworks Factory (Recycler)"
+    },
+    {
+      "id": "metalworks-factory-blast-furnace",
+      "name": "Metalworks Factory (Blast Furnace)"
+    },
+    {
+      "id": "metalworks-factory-engineering-station",
+      "name": "Metalworks Factory (Engineering Station)"
+    }
+  ],
+  "recipes": {
+    "coal-coke": {
+      "name": "Coal Coke",
+      "group": "coal-refinery",
+      "timeSeconds": 270,
+      "power": 3,
+      "resourceDelta": {
+        "coal": -200,
+        "coal-coke": 180
+      }
+    },
+    "coke-furnace": {
+      "name": "Coal Coke, Sulfur",
+      "group": "coal-refinery-coke-furnace",
+      "timeSeconds": 270,
+      "power": 3,
+      "resourceDelta": {
+        "coal": -200,
+        "coal-coke": 165,
+        "sulfur": 15
+      }
+    },
+    "coal-liquefier": {
+      "name": "Concrete Materials, Oil",
+      "group": "coal-refinery-coal-liquefier",
+      "timeSeconds": 270,
+      "power": 6,
+      "resourceDelta": {
+        "coal": -300,
+        "water": -50,
+        "concrete": 1,
+        "oil": 50
+      }
+    },
+    "advanced-coal-liquefier": {
+      "name": "Coke, Heavy Oil",
+      "group": "coal-refinery-advanced-coal-liquefier",
+      "timeSeconds": 405,
+      "power": 6,
+      "resourceDelta": {
+        "coal": -300,
+        "water": -100,
+        "coal-coke": 260,
+        "heavy-oil": 60
+      }
+    },
+    "petrol": {
+      "name": "Petrol",
+      "group": "oil-refinery",
+      "timeSeconds": 150,
+      "power": 1,
+      "resourceDelta": {
+        "oil": -150,
+        "petrol": 150
+      }
+    },
+    "petrol-reformer": {
+      "name": "Petrol",
+      "group": "oil-refinery-reformer",
+      "timeSeconds": 150,
+      "power": 1,
+      "resourceDelta": {
+        "oil": -120,
+        "water": -30,
+        "petrol": 150
+      }
+    },
+    "heavy-oil": {
+      "name": "Heavy Oil",
+      "group": "oil-refinery-cracking-unit",
+      "timeSeconds": 160,
+      "power": 2,
+      "resourceDelta": {
+        "oil": -150,
+        "heavy-oil": 90
+      }
+    },
+    "enriched-oil": {
+      "name": "Enriched Oil",
+      "group": "oil-refinery-petrochemical-plant",
+      "timeSeconds": 200,
+      "power": 6,
+      "resourceDelta": {
+        "sulfur": -60,
+        "heavy-oil": -30,
+        "enriched-oil": 30
+      }
+    },
+    "construction-materials": {
+      "name": "Construction Materials",
+      "group": "materials-factory",
+      "timeSeconds": 25,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -10,
+        "construction-materials": 1
+      }
+    },
+    "assembly-materials-1": {
+      "name": "Assembly Materials I",
+      "group": "materials-factory-forge",
+      "timeSeconds": 60,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -15,
+        "coal-coke": -75,
+        "assembly-materials-1": 1
+      }
+    },
+    "assembly-materials-2": {
+      "name": "Assembly Materials II",
+      "group": "materials-factory-forge",
+      "timeSeconds": 60,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -15,
+        "petrol": -25,
+        "assembly-materials-2": 1
+      }
+    },
+    "construction-materials-metal-press": {
+      "name": "Construction Materials",
+      "group": "materials-factory-metal-press",
+      "timeSeconds": 25,
+      "power": 4,
+      "resourceDelta": {
+        "salvage": -15,
+        "petrol": -25,
+        "construction-materials": 3
+      }
+    },
+    "construction-materials-smelter": {
+      "name": "Construction Materials",
+      "group": "materials-factory-smelter",
+      "timeSeconds": 25,
+      "power": 4,
+      "resourceDelta": {
+        "salvage": -15,
+        "coal-coke": -25,
+        "construction-materials": 3
+      }
+    },
+    "construction-materials-sandbag": {
+      "name": "Construction Materials, Sandbag",
+      "group": "materials-factory-assembly-bay",
+      "timeSeconds": 25,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -25,
+        "construction-materials": 1,
+        "sandbag": 5
+      }
+    },
+    "construction-materials-barbed-wire": {
+      "name": "Construction Materials, Barbed Wire",
+      "group": "materials-factory-assembly-bay",
+      "timeSeconds": 25,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -25,
+        "construction-materials": 1,
+        "barbed-wire": 5
+      }
+    },
+    "processed-construction-materials": {
+      "name": "Processed Construction Materials",
+      "group": "metalworks-factory",
+      "timeSeconds": 60,
+      "power": 5,
+      "resourceDelta": {
+        "construction-materials": -3,
+        "components": -20,
+        "processed-construction-materials": 1
+      }
+    },
+    "assembly-materials-3": {
+      "name": "Assembly Materials III",
+      "group": "metalworks-factory-blast-furnace",
+      "timeSeconds": 120,
+      "power": 5,
+      "resourceDelta": {
+        "construction-materials": -3,
+        "sulfur": -20,
+        "assembly-materials-3": 1
+      }
+    },
+    "assembly-materials-4": {
+      "name": "Assembly Materials IV",
+      "group": "metalworks-factory-blast-furnace",
+      "timeSeconds": 120,
+      "power": 5,
+      "resourceDelta": {
+        "processed-construction-materials": -1,
+        "heavy-oil": -66,
+        "assembly-materials-4": 1
+      }
+    },
+    "processed-construction-materials-blast-furnace": {
+      "name": "Processed Construction Materials",
+      "group": "metalworks-factory-blast-furnace",
+      "timeSeconds": 60,
+      "power": 8,
+      "resourceDelta": {
+        "construction-materials": -3,
+        "components": -55,
+        "heavy-oil": -6,
+        "processed-construction-materials": 3
+      }
+    },
+    "rare-alloys": {
+      "name": "Rare Alloys",
+      "group": "metalworks-factory-blast-furnace",
+      "timeSeconds": 180,
+      "power": 10,
+      "resourceDelta": {
+        "rare-metal": -20,
+        "processed-construction-materials": -5,
+        "coal-coke": -60,
+        "rare-alloys": 1
+      }
+    },
+    "steel-construction-materials": {
+      "name": "Steel Construction Materials",
+      "group": "metalworks-factory-engineering-station",
+      "timeSeconds": 90,
+      "power": 9,
+      "resourceDelta": {
+        "processed-construction-materials": -3,
+        "coal-coke": -200,
+        "sulfur": -65,
+        "heavy-oil": -35,
+        "steel-construction-materials": 1
+      }
+    },
+    "steel-construction-materials-enriched": {
+      "name": "Steel Construction Materials",
+      "group": "metalworks-factory-engineering-station",
+      "timeSeconds": 90,
+      "power": 12,
+      "resourceDelta": {
+        "processed-construction-materials": -9,
+        "coal-coke": -375,
+        "enriched-oil": -90,
+        "water": -100,
+        "steel-construction-materials": 3
+      }
+    },
+    "assembly-materials-5": {
+      "name": "Assembly Materials V",
+      "group": "metalworks-factory-engineering-station",
+      "timeSeconds": 120,
+      "power": 8,
+      "resourceDelta": {
+        "steel-construction-materials": -3,
+        "coal-coke": -245,
+        "assembly-materials-1": -10,
+        "assembly-materials-2": -10,
+        "assembly-materials-5": 1
+      }
+    }
+  }
+}
