@@ -39,17 +39,15 @@ export interface FactoryState {
 
 const solver = require("javascript-lp-solver/src/solver");
 
-export function solveFactory(
+export function getActiveResources(
   data: FactoryData,
-  state: FactoryState
-): { [recipeId: string]: number } {
-  const enabledRecipes = Object.keys(state.recipeCosts);
-
+  enabledRecipes: string[],
+  importResources: string[]
+) {
   const relevantResources = new Set<string>();
-  const producedResources = new Set<string>(Object.keys(state.importResources));
-  const importResources = new Set<string>(Object.keys(state.importResources));
+  const producedResources = new Set<string>(importResources);
+  const importedResources = new Set<string>(importResources);
   for (const recipeId of enabledRecipes) {
-    if (state.recipeCosts[recipeId] == null) continue;
     const resourceDelta = data.recipes[recipeId].resourceDelta;
     for (const resourceId of Object.keys(resourceDelta)) {
       relevantResources.add(resourceId);
@@ -60,8 +58,28 @@ export function solveFactory(
   }
   for (const resourceId of relevantResources) {
     if (producedResources.has(resourceId)) continue;
-    importResources.add(resourceId);
+    importedResources.add(resourceId);
   }
+
+  return { relevantResources, producedResources, importedResources };
+}
+
+function getNonNullKeys(obj: { [key: string]: unknown }): string[] {
+  return Object.keys(obj).filter((key) => obj[key] != null);
+}
+
+export function solveFactory(
+  data: FactoryData,
+  state: FactoryState
+): { [recipeId: string]: number } {
+  const enabledRecipes = getNonNullKeys(state.recipeCosts);
+  const importResources = getNonNullKeys(state.importResources);
+
+  const { relevantResources, importedResources } = getActiveResources(
+    data,
+    enabledRecipes,
+    importResources
+  );
 
   const constraints: { [resourceId: string]: { min: number } } = {};
   for (const resourceId of relevantResources) {
@@ -75,7 +93,7 @@ export function solveFactory(
   }
 
   const recipes: { [recipeId: string]: { [variableId: string]: number } } = {};
-  for (const resourceId of importResources) {
+  for (const resourceId of importedResources) {
     recipes[`import:${resourceId}`] = {
       [resourceId]: 1,
       cost:

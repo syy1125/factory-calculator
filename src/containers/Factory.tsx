@@ -70,6 +70,7 @@ export function Factory() {
       <LeftContainer>
         <FactoryGraph
           factoryData={factoryData}
+          enableRecipes={enableRecipe}
           resourceAmounts={resourceAmounts}
           setResourceAmount={setResourceAmount}
           resourceCosts={resourceCosts}
@@ -84,7 +85,7 @@ export function Factory() {
           factoryData={factoryData}
           recipeCosts={recipeCosts}
           setRecipeCost={setRecipeCost}
-          enableRecipe={enableRecipe}
+          enableRecipes={enableRecipe}
           setEnableRecipe={setEnableRecipe}
         />
       </RightContainer>

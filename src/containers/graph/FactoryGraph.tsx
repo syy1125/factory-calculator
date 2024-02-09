@@ -1,13 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { styled } from "styled-components";
 import { RecipePanel } from "../../components/RecipePanel.tsx";
 import { ResourcePanel } from "../../components/ResourcePanel.tsx";
-import type { FactoryData } from "../../factory/factory.ts";
+import { getActiveResources, type FactoryData } from "../../factory/factory.ts";
 import { useMapState } from "../../utils/hooks.ts";
 import { recipeSort } from "../../utils/recipeSort.ts";
 
 interface Props {
   factoryData: FactoryData;
+
+  enableRecipes: { [recipeId: string]: boolean };
 
   resourceAmounts: { [resourceId: string]: number };
   setResourceAmount: (resourceId: string, amount: number) => void;
@@ -27,6 +29,7 @@ const GraphContainer = styled.div`
 export function FactoryGraph(props: Props) {
   const {
     factoryData,
+    enableRecipes,
     resourceAmounts,
     setResourceAmount,
     resourceCosts,
@@ -35,35 +38,63 @@ export function FactoryGraph(props: Props) {
     setAllowImport,
   } = props;
 
+  const enabledRecipes = useMemo(
+    () =>
+      Object.keys(enableRecipes).filter((recipeId) => enableRecipes[recipeId]),
+    [enableRecipes]
+  );
+
+  const { relevantResources } = useMemo(
+    () => getActiveResources(factoryData, enabledRecipes, []),
+    [factoryData, enabledRecipes]
+  );
+
   const [resourcePositions, setResourcePosition, setResourcePositions] =
+    useMapState<[number, number]>();
+  const [recipePositions, setRecipePosition, setRecipePositions] =
     useMapState<[number, number]>();
 
   useEffect(() => {
-    const [sortedResources, sortedRecipes] = recipeSort(factoryData);
+    const [sortedResources, sortedRecipes] = recipeSort(
+      factoryData,
+      enabledRecipes
+    );
+
+    console.log(sortedRecipes);
 
     const targetResourcePositions: { [resourceId: string]: [number, number] } =
       {};
     for (let i = 0; i < sortedResources.length; i++) {
       for (let j = 0; j < sortedResources[i].length; j++) {
         targetResourcePositions[sortedResources[i][j]] = [
-          i * 500 + 100,
+          i * 600 + 100,
+          j * 150 + 100,
+        ];
+      }
+    }
+    const targetRecipePositions: { [recipeId: string]: [number, number] } = {};
+    for (let i = 0; i < sortedRecipes.length; i++) {
+      for (let j = 0; j < sortedRecipes[i].length; j++) {
+        targetRecipePositions[sortedRecipes[i][j]] = [
+          i * 600 + 350,
           j * 150 + 100,
         ];
       }
     }
 
     setResourcePositions(targetResourcePositions);
-  }, [factoryData, setResourcePositions]);
+    setRecipePositions(targetRecipePositions);
+  }, [factoryData, enabledRecipes, setResourcePositions, setRecipePositions]);
 
   return (
     <GraphContainer>
-      {Object.keys(factoryData.resources).map((resourceId) => {
+      {Array.from(relevantResources).map((resourceId) => {
         const resource = factoryData.resources[resourceId];
 
         return (
           <ResourcePanel
             key={resourceId}
-            position={resourcePositions[resourceId] ?? [0, 0]}
+            position={resourcePositions[resourceId]}
             resourceId={resourceId}
             resourceName={resource.shortName ?? resource.name}
             imagePath={
@@ -80,11 +111,16 @@ export function FactoryGraph(props: Props) {
           />
         );
       })}
-      <RecipePanel
-        position={[350, 100]}
-        factoryData={factoryData}
-        recipeId="coal-coke"
-      />
+      {enabledRecipes.map((recipeId) => {
+        return (
+          <RecipePanel
+            key={recipeId}
+            position={recipePositions[recipeId]}
+            factoryData={factoryData}
+            recipeId={recipeId}
+          />
+        );
+      })}
     </GraphContainer>
   );
 }

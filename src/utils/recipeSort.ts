@@ -1,20 +1,26 @@
 import { error } from "console";
-import { FactoryData, FactoryState } from "../factory/factory";
+import {
+  FactoryData,
+  FactoryState,
+  getActiveResources,
+} from "../factory/factory";
 
 // Topological sort of recipes and resources. First array is the sorted resources and second array is the sorted recipes.
 export function recipeSort(
   data: FactoryData,
-  state: FactoryState | null = null
+  enabledRecipes: string[]
 ): [string[][], string[][]] {
   // These also track how many incoming connections these unsorted resources/recipes have.
   const unsortedResources: { [resourceId: string]: number } = {};
   const unsortedRecipes: { [recipeId: string]: number } = {};
   const resourceOutEdges: { [resourceId: string]: string[] } = {};
 
-  for (let resourceId of Object.keys(data.resources)) {
+  const { relevantResources } = getActiveResources(data, enabledRecipes, []);
+
+  for (let resourceId of relevantResources) {
     unsortedResources[resourceId] = 0;
   }
-  for (let recipeId of Object.keys(state == null ? data.recipes : state.recipeCosts)) {
+  for (let recipeId of enabledRecipes) {
     const { resourceDelta } = data.recipes[recipeId];
     unsortedRecipes[recipeId] = 0;
 

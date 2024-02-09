@@ -4,7 +4,7 @@ import { FactoryData } from "../factory/factory";
 import { RecipeDisplay } from "./RecipeDisplay";
 
 interface Props {
-  position: [number, number];
+  position: [number, number]|null;
 
   factoryData: FactoryData;
   recipeId: string;
@@ -27,7 +27,8 @@ const TitleRow = styled.div`
 `;
 
 const RecipeName = styled.div`
-  margin-left: 5px;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
   user-select: none;
   text-align: left;
 `;
@@ -35,6 +36,8 @@ const RecipeName = styled.div`
 export function RecipePanel(props: Props) {
   const { position, factoryData, recipeId } = props;
   const { name } = factoryData.recipes[recipeId];
+
+  if (position == null) return null;
 
   return (
     <Panel style={{ left: position[0], top: position[1] }}>

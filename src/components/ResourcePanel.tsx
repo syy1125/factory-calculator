@@ -91,6 +91,8 @@ export function ResourcePanel(props: Props) {
   } = props;
   const [expanded, setExpanded] = useState(false);
 
+  if (position == null) return null;
+
   return (
     <Panel style={{ left: position[0], top: position[1] }}>
       <Row>

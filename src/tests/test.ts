@@ -74,7 +74,7 @@ function main() {
 
   // console.log(soln);
 
-  const [sortedResources, sortedRecipes] = recipeSort(data);
+  const [sortedResources, sortedRecipes] = recipeSort(data, Object.keys(data.recipes));
 
   console.log(sortedResources)
   console.log(sortedRecipes)

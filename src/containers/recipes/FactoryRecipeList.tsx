@@ -11,7 +11,7 @@ interface Props {
   factoryData: FactoryData;
   recipeCosts: { [recipeId: string]: number };
   setRecipeCost: (recipeId: string, cost: number) => void;
-  enableRecipe: { [recipeId: string]: boolean };
+  enableRecipes: { [recipeId: string]: boolean };
   setEnableRecipe: (recipeId: string, enable: boolean) => void;
 }
 
@@ -51,7 +51,7 @@ export function FactoryRecipeList(props: Props) {
     factoryData,
     recipeCosts,
     setRecipeCost,
-    enableRecipe,
+    enableRecipes,
     setEnableRecipe,
   } = props;
 
@@ -90,13 +90,13 @@ export function FactoryRecipeList(props: Props) {
             [id]: null,
           };
         }
-        if (recipeByGroup[id].every((recipeId) => enableRecipe[recipeId])) {
+        if (recipeByGroup[id].every((recipeId) => enableRecipes[recipeId])) {
           return {
             ...recipeGroupChecked,
             [id]: true,
           };
         } else if (
-          recipeByGroup[id].every((recipeId) => !enableRecipe[recipeId])
+          recipeByGroup[id].every((recipeId) => !enableRecipes[recipeId])
         ) {
           return {
             ...recipeGroupChecked,
@@ -109,7 +109,7 @@ export function FactoryRecipeList(props: Props) {
           };
         }
       }, {} as { [recipeGroupId: string]: boolean | null }),
-    [enableRecipe, recipeByGroup, factoryData]
+    [enableRecipes, recipeByGroup, factoryData]
   );
 
   const setEnableRecipeGroup = useCallback(
@@ -155,12 +155,12 @@ export function FactoryRecipeList(props: Props) {
                 <RecipeRow
                   key={recipeId}
                   hidden={!expandGroups[id]}
-                  enabled={enableRecipe[recipeId]}
+                  enabled={enableRecipes[recipeId]}
                 >
                   <RecipeTitle>
                     <input
                       type="checkbox"
-                      checked={enableRecipe[recipeId]}
+                      checked={enableRecipes[recipeId]}
                       onChange={(e) =>
                         setEnableRecipe(recipeId, e.target.checked)
                       }
