@@ -37,6 +37,7 @@
     },
     "water": {
       "name": "Water",
+      "icon": "/foxhole/Water.png",
       "value": 1
     },
     "oil": {
@@ -52,73 +53,88 @@
     "heavy-oil": {
       "name": "Heavy Oil",
       "shortName": "HOil",
+      "icon": "/foxhole/HeavyOil.png",
       "value": 2
     },
     "enriched-oil": {
       "name": "Enriched Oil",
       "shortName": "EOil",
+      "icon": "/foxhole/EnrichedOil.png",
       "value": 10
     },
     "rare-metal": {
       "name": "Rare Metal",
       "shortName": "RMet",
+      "icon": "/foxhole/RareMetal.png",
       "value": 20
     },
     "rare-alloys": {
       "name": "Rare Alloys",
       "shortName": "RAlloy",
+      "icon": "/foxhole/RareAlloys.png",
       "value": 200
     },
     "construction-materials": {
       "name": "Construction Materials",
       "shortName": "CMats",
+      "icon": "/foxhole/ConstructionMaterials.png",
       "value": 5
     },
     "assembly-materials-1": {
       "name": "Assembly Materials I",
       "shortName": "AssMat1",
+      "icon": "/foxhole/AssemblyMaterials1.png",
       "value": 20
     },
     "assembly-materials-2": {
       "name": "Assembly Materials II",
       "shortName": "AssMat2",
+      "icon": "/foxhole/AssemblyMaterials2.png",
       "value": 20
     },
     "processed-construction-materials": {
       "name": "Processed Construction Materials",
       "shortName": "PCMats",
+      "icon": "/foxhole/ProcessedConstructionMaterials.png",
       "value": 80
     },
     "assembly-materials-3": {
       "name": "Assembly Materials III",
       "shortName": "AssMat3",
+      "icon": "/foxhole/AssemblyMaterials3.png",
       "value": 80
     },
     "assembly-materials-4": {
       "name": "Assembly Materials IV",
       "shortName": "AssMat4",
+      "icon": "/foxhole/AssemblyMaterials4.png",
       "value": 160
     },
     "steel-construction-materials": {
       "name": "Steel Construction Materials",
       "shortName": "SCMat",
+      "icon": "/foxhole/SteelConstructionMaterials.png",
       "value": 400
     },
     "assembly-materials-5": {
       "name": "Assembly Materials V",
       "shortName": "AssMat5",
+      "icon": "/foxhole/AssemblyMaterials5.png",
       "value": 1600
     },
     "sandbag": {
       "name": "Sandbag",
+      "icon": "/foxhole/Sandbag.png",
       "value": 5
     },
     "barbed-wire": {
       "name": "Barbed Wire",
+      "icon": "/foxhole/BarbedWire.png",
       "value": 5
     },
     "metal-beam": {
       "name": "Metal Beam",
+      "icon": "/foxhole/MetalBeam.png",
       "value": 7.5
     }
   },

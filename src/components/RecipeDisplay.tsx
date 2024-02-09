@@ -42,16 +42,32 @@ const ResourceContainer = styled.div`
 `;
 
 const ResourceNameTag = styled.span`
+  user-select: none;
   align-self: start;
   padding: 2px;
-`
+`;
 
 const AmountTag = styled.span`
+  user-select: none;
   position: absolute;
   right: 0;
   bottom: 0;
   padding: 1px 2px;
-  background-color: #00000080;
+  background-color: #0008;
+`;
+
+const ResourceNameTooltip = styled.span`
+  position: absolute;
+  padding: 2px;
+  opacity: 0;
+  z-index: 1;
+  background-color: #000C;
+  user-select: none;
+  transition: opacity 0.1s linear;
+
+  ${ResourceContainer}:hover > & {
+    opacity: 1;
+  }
 `;
 
 function RecipeResourceBox(props: {
@@ -78,6 +94,7 @@ function RecipeResourceBox(props: {
         alt={resource.name}
       />
       <AmountTag>{amount}</AmountTag>
+      <ResourceNameTooltip>{resource.name}</ResourceNameTooltip>
     </ResourceContainer>
   );
 }
