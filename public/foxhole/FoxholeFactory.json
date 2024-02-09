@@ -116,6 +116,10 @@
     "barbed-wire": {
       "name": "Barbed Wire",
       "value": 5
+    },
+    "metal-beam": {
+      "name": "Metal Beam",
+      "value": 7.5
     }
   },
   "recipeGroups": [
@@ -383,6 +387,18 @@
         "processed-construction-materials": -1,
         "heavy-oil": -66,
         "assembly-materials-4": 1
+      }
+    },
+    "processed-construction-materials-recycler": {
+      "name": "Processed Construction Materials",
+      "group": "metalworks-factory-recycler",
+      "timeSeconds": 90,
+      "power": 8,
+      "resourceDelta": {
+        "construction-materials": -15,
+        "metal-beam": -1,
+        "heavy-oil": -10,
+        "processed-construction-materials": 1
       }
     },
     "processed-construction-materials-blast-furnace": {
