@@ -1,27 +1,31 @@
+export interface ResourceData {
+  readonly name: string;
+  readonly shortName?: string;
+  readonly icon?: string;
+  readonly value: number;
+}
+
+export interface RecipeData {
+  readonly name: string;
+  readonly group: string;
+  readonly timeSeconds: number;
+  readonly power: number;
+  readonly resourceDelta: {
+    readonly [resource: string]: number;
+  };
+}
+
 export interface FactoryData {
   readonly name: string;
   readonly resources: {
-    readonly [resource: string]: {
-      readonly name: string;
-      readonly shortName?: string;
-      readonly icon?: string;
-      readonly value: number;
-    };
+    readonly [resource: string]: ResourceData;
   };
   readonly recipeGroups: Array<{
     readonly id: string;
     readonly name: string;
   }>;
   readonly recipes: {
-    readonly [recipe: string]: {
-      readonly name: string;
-      readonly group: string;
-      readonly timeSeconds: number;
-      readonly power: number;
-      readonly resourceDelta: {
-        readonly [resource: string]: number;
-      };
-    };
+    readonly [recipe: string]: RecipeData;
   };
 }
 

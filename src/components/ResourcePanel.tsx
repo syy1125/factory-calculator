@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import expandLess from "../icons/expand_less.png";
-import expandMore from "../icons/expand_more.png";
+import { FlexFiller } from "./FlexFiller";
+import { ExpandToggle } from "./ExpandToggle";
 
 interface Props {
   position: [number, number];
@@ -11,11 +11,11 @@ interface Props {
   imagePath: string | null;
 
   amount: number;
-  setAmount: (amount: number) => void;
+  setAmount: (resourceId: string, amount: number) => void;
   cost: number;
-  setCost: (cost: number) => void;
+  setCost: (resourceId: string, cost: number) => void;
   allowImport: boolean;
-  setAllowImport: (allowImport: boolean) => void;
+  setAllowImport: (resourceId: string, allowImport: boolean) => void;
 
   imported?: number;
   produced?: number;
@@ -62,27 +62,6 @@ const Row = styled.div<{ hidden?: boolean }>`
   }
 `;
 
-const ExpandButton = styled.button`
-  border: none;
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border-radius: 5px;
-
-  transition: background-color 0.1s ease;
-
-  &:hover {
-    background-color: grey;
-  }
-`;
-
-const FlexFiller = styled.div`
-  min-width: 20px;
-  flex-grow: 1;
-`;
-
 const NumberInput = styled.input`
   border-radius: 2px;
   width: 5em;
@@ -120,14 +99,7 @@ export function ResourcePanel(props: Props) {
         )}
         <ResourceName>{resourceName}</ResourceName>
         <FlexFiller />
-        <ExpandButton onClick={() => setExpanded((expanded) => !expanded)}>
-          <img
-            src={expanded ? expandLess : expandMore}
-            width={24}
-            height={24}
-            alt="expand"
-          />
-        </ExpandButton>
+        <ExpandToggle expanded={expanded} setExpanded={setExpanded} />
       </Row>
       <Row hidden={!expanded}>
         <span>Current Amount</span>
@@ -136,7 +108,7 @@ export function ResourcePanel(props: Props) {
           type="number"
           min={0}
           value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          onChange={(e) => setAmount(resourceId, Number(e.target.value))}
         />
       </Row>
       <Row hidden={!expanded}>
@@ -144,7 +116,7 @@ export function ResourcePanel(props: Props) {
         <input
           type="checkbox"
           checked={allowImport}
-          onChange={(e) => setAllowImport(e.target.checked)}
+          onChange={(e) => setAllowImport(resourceId, e.target.checked)}
         />
         <FlexFiller />
         <span>Cost:</span>
@@ -152,7 +124,7 @@ export function ResourcePanel(props: Props) {
           type="number"
           style={{ width: "3em" }}
           value={cost}
-          onChange={(e) => setCost(Number(e.target.value))}
+          onChange={(e) => setCost(resourceId, Number(e.target.value))}
           min={0}
           step={0.01}
           readOnly={!allowImport}

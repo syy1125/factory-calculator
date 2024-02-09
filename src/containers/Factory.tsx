@@ -1,38 +1,40 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { FactoryGraph } from "./FactoryGraph";
+import { FactoryGraph } from "./graph/FactoryGraph";
 import { FactoryData } from "../factory/factory";
-import { FactoryOutputSelection } from "./FactoryOutputSelection";
-import { FactoryRecipes } from "./FactoryRecipes";
+import { FactoryOutputSelection } from "./output/FactoryOutputSelection";
+import { FactoryRecipeList } from "./recipes/FactoryRecipeList";
+import { useMapState } from "../utils/hooks";
 
 const OuterContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: row;
-  flex-grow: 1;
 `;
 
 const LeftContainer = styled.div`
+  flex-grow: 4;
   display: flex;
-  flex-grow: 3;
   flex-direction: column;
 `;
 
 const RightContainer = styled.div`
   display: flex;
-  flex-grow: 1;
+  flex-direction: column;
+  border-left: 2px solid white;
+  overflow-y: auto;
 `;
 
 export function Factory() {
   const [factoryData, setFactoryData] = useState<FactoryData | null>(null);
-  const [resourceAmounts, setResourceAmount] = useState<{
-    [resourceId: string]: number;
-  }>({});
-  const [resourceCosts, setResourceCost] = useState<{
-    [resourceId: string]: number;
-  }>({});
-  const [allowImports, setAllowImport] = useState<{
-    [resourceId: string]: boolean;
-  }>({});
+  const [resourceAmounts, setResourceAmount] = useMapState<number>();
+  const [resourceCosts, setResourceCost, setResourceCosts] =
+    useMapState<number>();
+  const [allowImports, setAllowImport] = useMapState<boolean>();
+  const [recipeCosts, setRecipeCost] = useMapState<number>();
+  const [enableRecipe, setEnableRecipe, setEnableRecipes] =
+    useMapState<boolean>();
 
   useEffect(() => {
     const dataPath = process.env.PUBLIC_URL + "/foxhole/FoxholeFactory.json";
@@ -45,9 +47,23 @@ export function Factory() {
         for (let resourceId of Object.keys(data.resources)) {
           initialResourceCost[resourceId] = data.resources[resourceId].value;
         }
-        setResourceCost(initialResourceCost);
+        setResourceCosts(initialResourceCost);
+
+        setEnableRecipes(
+          Object.keys(data.recipes).reduce(
+            (enableRecipe, recipeId) => ({
+              ...enableRecipe,
+              [recipeId]: true,
+            }),
+            {}
+          )
+        );
       });
-  }, [setFactoryData]);
+  }, [setFactoryData, setEnableRecipes, setResourceCosts]);
+
+  if (factoryData == null) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <OuterContainer>
@@ -64,7 +80,13 @@ export function Factory() {
         <FactoryOutputSelection />
       </LeftContainer>
       <RightContainer>
-        <FactoryRecipes />
+        <FactoryRecipeList
+          factoryData={factoryData}
+          recipeCosts={recipeCosts}
+          setRecipeCost={setRecipeCost}
+          enableRecipe={enableRecipe}
+          setEnableRecipe={setEnableRecipe}
+        />
       </RightContainer>
     </OuterContainer>
   );

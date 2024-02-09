@@ -1,20 +1,20 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 import { styled } from "styled-components";
-import { ResourcePanel } from "../components/ResourcePanel";
-import type { FactoryData } from "../factory/factory.ts";
-import { useMapState } from "../utils/hooks.ts";
-import { recipeSort } from "../utils/recipeSort.ts";
-import { RecipePanel } from "../components/RecipePanel.tsx";
+import { RecipePanel } from "../../components/RecipePanel.tsx";
+import { ResourcePanel } from "../../components/ResourcePanel.tsx";
+import type { FactoryData } from "../../factory/factory.ts";
+import { useMapState } from "../../utils/hooks.ts";
+import { recipeSort } from "../../utils/recipeSort.ts";
 
 interface Props {
-  factoryData: FactoryData | null;
+  factoryData: FactoryData;
 
   resourceAmounts: { [resourceId: string]: number };
-  setResourceAmount: Dispatch<SetStateAction<Props["resourceAmounts"]>>;
+  setResourceAmount: (resourceId: string, amount: number) => void;
   resourceCosts: { [resourceId: string]: number };
-  setResourceCost: Dispatch<SetStateAction<Props["resourceCosts"]>>;
+  setResourceCost: (resourceId: string, cost: number) => void;
   allowImports: { [resourceId: string]: boolean };
-  setAllowImport: Dispatch<SetStateAction<Props["allowImports"]>>;
+  setAllowImport: (resourceId: string, allowImport: boolean) => void;
 }
 
 const GraphContainer = styled.div`
@@ -39,8 +39,6 @@ export function FactoryGraph(props: Props) {
     useMapState<[number, number]>();
 
   useEffect(() => {
-    if (factoryData == null) return;
-
     const [sortedResources, sortedRecipes] = recipeSort(factoryData);
 
     const targetResourcePositions: { [resourceId: string]: [number, number] } =
@@ -56,10 +54,6 @@ export function FactoryGraph(props: Props) {
 
     setResourcePositions(targetResourcePositions);
   }, [factoryData, setResourcePositions]);
-
-  if (factoryData == null) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <GraphContainer>
@@ -78,26 +72,11 @@ export function FactoryGraph(props: Props) {
                 : process.env.PUBLIC_URL + resource.icon
             }
             amount={resourceAmounts[resourceId] ?? 0}
-            setAmount={(amount: number) =>
-              setResourceAmount((resourceAmounts) => ({
-                ...resourceAmounts,
-                [resourceId]: amount,
-              }))
-            }
+            setAmount={setResourceAmount}
             cost={resourceCosts[resourceId] ?? 0}
-            setCost={(cost: number) =>
-              setResourceCost((resourceCosts) => ({
-                ...resourceCosts,
-                [resourceId]: cost,
-              }))
-            }
+            setCost={setResourceCost}
             allowImport={allowImports[resourceId] ?? true}
-            setAllowImport={(allowImport: boolean) =>
-              setAllowImport((allowResourceImports) => ({
-                ...allowResourceImports,
-                [resourceId]: allowImport,
-              }))
-            }
+            setAllowImport={setAllowImport}
           />
         );
       })}
@@ -105,7 +84,6 @@ export function FactoryGraph(props: Props) {
         position={[350, 100]}
         factoryData={factoryData}
         recipeId="coal-coke"
-        recipeName="Coal Coke"
       />
     </GraphContainer>
   );
