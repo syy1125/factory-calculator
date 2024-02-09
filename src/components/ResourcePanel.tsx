@@ -31,6 +31,7 @@ const Panel = styled.div`
   align-items: stretch;
   border: 2px solid white;
   border-radius: 5px;
+  background-color: #282c34;
 
   span {
     font-size: 12px;

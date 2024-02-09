@@ -1,9 +1,5 @@
-import { error } from "console";
-import {
-  FactoryData,
-  FactoryState,
-  getActiveResources,
-} from "../factory/factory";
+import { FactoryData } from "../factory/factory";
+import { getActiveResources } from "./getActiveResources";
 
 // Topological sort of recipes and resources. First array is the sorted resources and second array is the sorted recipes.
 export function recipeSort(
@@ -15,7 +11,10 @@ export function recipeSort(
   const unsortedRecipes: { [recipeId: string]: number } = {};
   const resourceOutEdges: { [resourceId: string]: string[] } = {};
 
-  const { relevantResources } = getActiveResources(data, enabledRecipes, []);
+  const { relevantResources, producedResources } = getActiveResources(
+    data,
+    enabledRecipes
+  );
 
   for (let resourceId of relevantResources) {
     unsortedResources[resourceId] = 0;
@@ -41,6 +40,7 @@ export function recipeSort(
   let nextResources: string[] = [];
   let nextRecipes: string[] = [];
 
+  // Pretty much topological sort, but we have alternating recipes / resources.
   // Run a pass through resources to kick start the sorting
   for (let resourceId of Object.keys(unsortedResources)) {
     if (unsortedResources[resourceId] === 0) {
@@ -111,6 +111,40 @@ export function recipeSort(
 
     sortedResources.push(nextResources);
     nextResources = [];
+  }
+
+  // If applicable, move resource closer to recipes that use it
+  const recipeOrdering: { [recipeId: string]: number } = {};
+  for (let i = 0; i < sortedRecipes.length; i++) {
+    for (let recipeId of sortedRecipes[i]) {
+      recipeOrdering[recipeId] = i;
+    }
+  }
+
+  const resourceOrdering: { [resourceId: string]: number } = {};
+  for (let i = 0; i < sortedResources.length; i++) {
+    for (let resourceId of sortedResources[i]) {
+      resourceOrdering[resourceId] = i;
+    }
+  }
+
+  const resourceTargetOrdering: { [resourceId: string]: number } = {};
+  for (let resourceId of Object.keys(resourceOutEdges)) {
+    if (producedResources.has(resourceId)) continue;
+    resourceTargetOrdering[resourceId] = Math.min(
+      ...resourceOutEdges[resourceId].map(
+        (recipeId) => recipeOrdering[recipeId]
+      )
+    );
+  }
+
+  for (let resourceId of Object.keys(resourceTargetOrdering)) {
+    if (resourceTargetOrdering[resourceId] != resourceOrdering[resourceId]) {
+      sortedResources[resourceOrdering[resourceId]] = sortedResources[
+        resourceOrdering[resourceId]
+      ].filter((id) => id != resourceId);
+      sortedResources[resourceTargetOrdering[resourceId]].push(resourceId);
+    }
   }
 
   return [sortedResources, sortedRecipes];

@@ -20,6 +20,7 @@ const Panel = styled.div`
   border: 2px solid white;
   border-radius: 5px;
   padding: 2px;
+  background-color: #282c34;
 `;
 
 const TitleRow = styled.div`

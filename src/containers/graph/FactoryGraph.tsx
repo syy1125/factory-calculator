@@ -2,7 +2,8 @@ import { useEffect, useMemo } from "react";
 import { styled } from "styled-components";
 import { RecipePanel } from "../../components/RecipePanel.tsx";
 import { ResourcePanel } from "../../components/ResourcePanel.tsx";
-import { getActiveResources, type FactoryData } from "../../factory/factory.ts";
+import { type FactoryData } from "../../factory/factory.ts";
+import { getActiveResources } from "../../utils/getActiveResources.ts";
 import { useMapState } from "../../utils/hooks.ts";
 import { recipeSort } from "../../utils/recipeSort.ts";
 
@@ -45,7 +46,7 @@ export function FactoryGraph(props: Props) {
   );
 
   const { relevantResources } = useMemo(
-    () => getActiveResources(factoryData, enabledRecipes, []),
+    () => getActiveResources(factoryData, enabledRecipes),
     [factoryData, enabledRecipes]
   );
 
