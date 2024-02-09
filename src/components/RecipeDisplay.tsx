@@ -19,6 +19,7 @@ const RecipeContainer = styled.div`
 `;
 
 const InputResources = styled.div`
+  flex-basis: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: row;
@@ -27,6 +28,7 @@ const InputResources = styled.div`
 `;
 
 const OutputResources = styled.div`
+  flex-basis: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: row;

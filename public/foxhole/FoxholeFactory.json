@@ -254,6 +254,19 @@
         "heavy-oil": 60
       }
     },
+    "advanced-coal-liquefier-concrete": {
+      "name": "Concrete Materials, Sulfur, Oil",
+      "group": "coal-refinery-advanced-coal-liquefier",
+      "timeSeconds": 270,
+      "power": 6,
+      "resourceDelta": {
+        "coal": -300,
+        "water": -100,
+        "concrete": 1,
+        "sulfur": 15,
+        "oil": 100
+      }
+    },
     "petrol": {
       "name": "Petrol",
       "group": "oil-refinery",
@@ -370,6 +383,17 @@
         "salvage": -25,
         "construction-materials": 1,
         "barbed-wire": 5
+      }
+    },
+    "construction-materials-metal-beam": {
+      "name": "Construction Materials, Metal Beam",
+      "group": "materials-factory-assembly-bay",
+      "timeSeconds": 25,
+      "power": 2,
+      "resourceDelta": {
+        "salvage": -25,
+        "construction-materials": 1,
+        "metal-beam": 1
       }
     },
     "processed-construction-materials": {
