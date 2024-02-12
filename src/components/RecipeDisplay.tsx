@@ -65,6 +65,7 @@ const ResourceNameTooltip = styled.span`
   z-index: 1;
   background-color: #000C;
   user-select: none;
+  pointer-events: none;
   transition: opacity 0.1s linear;
 
   ${ResourceContainer}:hover > & {

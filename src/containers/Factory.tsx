@@ -68,6 +68,10 @@ export function Factory() {
   return (
     <OuterContainer>
       <LeftContainer>
+        <FactoryOutputSelection
+          factoryData={factoryData}
+          enableRecipe={enableRecipe}
+        />
         <FactoryGraph
           factoryData={factoryData}
           enableRecipes={enableRecipe}
@@ -78,7 +82,6 @@ export function Factory() {
           allowImports={allowImports}
           setAllowImport={setAllowImport}
         />
-        <FactoryOutputSelection />
       </LeftContainer>
       <RightContainer>
         <FactoryRecipeList

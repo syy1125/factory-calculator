@@ -139,13 +139,13 @@ export function recipeSort(
   }
 
   for (let resourceId of Object.keys(resourceTargetOrdering)) {
-    if (resourceTargetOrdering[resourceId] != resourceOrdering[resourceId]) {
+    if (resourceTargetOrdering[resourceId] !== resourceOrdering[resourceId]) {
       sortedResources[resourceOrdering[resourceId]] = sortedResources[
         resourceOrdering[resourceId]
-      ].filter((id) => id != resourceId);
+      ].filter((id) => id !== resourceId);
       sortedResources[resourceTargetOrdering[resourceId]].push(resourceId);
     }
   }
 
-  return [sortedResources, sortedRecipes];
+  return [sortedResources.map(resources => resources.sort()), sortedRecipes.map(recipes => recipes.sort())];
 }
