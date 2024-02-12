@@ -29,11 +29,11 @@ const RecipeGroupRow = styled.div`
   }
 `;
 
-const RecipeRow = styled.div<{ hidden: boolean; enabled: boolean }>`
-  display: ${(props) => (props.hidden ? "none" : "flex")};
+const RecipeRow = styled.div<{ $hidden: boolean; $enabled: boolean }>`
+  display: ${(props) => (props.$hidden ? "none" : "flex")};
   flex-direction: column;
 
-  opacity: ${(props) => (props.enabled ? 1 : 0.6)};
+  opacity: ${(props) => (props.$enabled ? 1 : 0.6)};
 `;
 
 const RecipeTitle = styled.div`
@@ -148,14 +148,14 @@ export function FactoryRecipeList(props: Props) {
                 }
               />
             </RecipeGroupRow>
-            {recipeByGroup[id].map((recipeId) => {
+            {recipeByGroup[id].sort().map((recipeId) => {
               const recipe = factoryData.recipes[recipeId];
 
               return (
                 <RecipeRow
                   key={recipeId}
-                  hidden={!expandGroups[id]}
-                  enabled={enableRecipes[recipeId]}
+                  $hidden={!expandGroups[id]}
+                  $enabled={enableRecipes[recipeId]}
                 >
                   <RecipeTitle>
                     <input
