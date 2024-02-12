@@ -6,6 +6,7 @@ import { type FactoryData } from "../../factory/factory.ts";
 import { getActiveResources } from "../../utils/getActiveResources.ts";
 import { useMapState } from "../../utils/hooks.ts";
 import { recipeSort } from "../../utils/recipeSort.ts";
+import simpleFrame from './SimpleFrame.png'
 
 interface Props {
   factoryData: FactoryData;
@@ -25,6 +26,10 @@ const GraphContainer = styled.div`
   flex-grow: 1;
   padding: 0px;
   overflow: auto;
+
+  background-image: url(${simpleFrame});
+  background-attachment: local;
+  background-size: 20px;
 `;
 
 export function FactoryGraph(props: Props) {
@@ -60,8 +65,6 @@ export function FactoryGraph(props: Props) {
       factoryData,
       enabledRecipes
     );
-
-    console.log(sortedRecipes);
 
     const targetResourcePositions: { [resourceId: string]: [number, number] } =
       {};
