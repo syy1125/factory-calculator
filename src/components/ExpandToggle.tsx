@@ -18,7 +18,6 @@ const ExpandButton = styled.button`
   border-radius: 5px;
 
   transition: background-color 0.1s ease;
-
   &:hover {
     background-color: grey;
   }

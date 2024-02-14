@@ -19,7 +19,7 @@ const Title = styled.div`
   position: relative;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
-  font-size: 24px;
+  font-size: ${(props) => props.theme.fontSize.title}px;
 `;
 
 const AbsoluteButton = styled.button`

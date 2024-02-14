@@ -15,7 +15,7 @@ interface Props {
   cost: number;
   setCost: (resourceId: string, cost: number) => void;
   allowImport: boolean;
-  setAllowImport: (resourceId: string, allowImport: boolean) => void;
+  setAllowImport?: (resourceId: string, allowImport: boolean) => void;
 
   imported?: number;
   produced?: number;
@@ -119,7 +119,8 @@ export function ResourcePanel(props: Props) {
         <input
           type="checkbox"
           checked={allowImport}
-          onChange={(e) => setAllowImport(resourceId, e.target.checked)}
+          disabled={setAllowImport == null}
+          onChange={(e) => setAllowImport?.(resourceId, e.target.checked)}
         />
         <FlexFiller />
         <span>Cost:</span>

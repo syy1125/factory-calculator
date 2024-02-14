@@ -6,7 +6,7 @@ import { type FactoryData } from "../../factory/factory.ts";
 import { getActiveResources } from "../../utils/getActiveResources.ts";
 import { useMapState } from "../../utils/hooks.ts";
 import { recipeSort } from "../../utils/recipeSort.ts";
-import simpleFrame from './SimpleFrame.png'
+import simpleFrame from "./SimpleFrame.png";
 
 interface Props {
   factoryData: FactoryData;
@@ -50,7 +50,7 @@ export function FactoryGraph(props: Props) {
     [enableRecipes]
   );
 
-  const { relevantResources } = useMemo(
+  const { relevantResources, importedResources } = useMemo(
     () => getActiveResources(factoryData, enabledRecipes),
     [factoryData, enabledRecipes]
   );
@@ -110,8 +110,12 @@ export function FactoryGraph(props: Props) {
             setAmount={setResourceAmount}
             cost={resourceCosts[resourceId] ?? 0}
             setCost={setResourceCost}
-            allowImport={allowImports[resourceId] ?? true}
-            setAllowImport={setAllowImport}
+            allowImport={
+              importedResources.has(resourceId) || allowImports[resourceId]
+            }
+            setAllowImport={
+              importedResources.has(resourceId) ? undefined : setAllowImport
+            }
           />
         );
       })}

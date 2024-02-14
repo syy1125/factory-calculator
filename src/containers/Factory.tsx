@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { FactoryGraph } from "./graph/FactoryGraph";
-import { FactoryData } from "../factory/factory";
-import { FactoryOutputSelection } from "./output/FactoryOutputSelection";
-import { FactoryRecipeList } from "./recipes/FactoryRecipeList";
+import { FactoryData, FactoryState, solveFactory } from "../factory/factory";
+import { getActiveResources } from "../utils/getActiveResources";
 import { useMapState } from "../utils/hooks";
+import { FactoryGraph } from "./graph/FactoryGraph";
+import { FactoryOverview } from "./overview/FactoryOverview";
+import { FactoryRecipeList } from "./recipes/FactoryRecipeList";
 
 const OuterContainer = styled.div`
   width: 100vw;
@@ -35,6 +36,12 @@ export function Factory() {
   const [recipeCosts, setRecipeCost] = useMapState<number>();
   const [enableRecipe, setEnableRecipe, setEnableRecipes] =
     useMapState<boolean>();
+  const [desiredOutput, setDesiredOutput] = useState<
+    Array<{ resourceId: string | null; amount: number }>
+  >([]);
+
+  const [importAmounts, , setImportAmounts] = useMapState<number>();
+  const [recipeAmounts, , setRecipeAmounts] = useMapState<number>();
 
   useEffect(() => {
     const dataPath = process.env.PUBLIC_URL + "/foxhole/FoxholeFactory.json";
@@ -61,6 +68,74 @@ export function Factory() {
       });
   }, [setFactoryData, setEnableRecipes, setResourceCosts]);
 
+  const doSolveFactory = useCallback(() => {
+    if (factoryData == null) {
+      console.error("Cannot solve factory before it is ready");
+      return;
+    }
+
+    const { importedResources } = getActiveResources(
+      factoryData,
+      Object.keys(enableRecipe).filter((recipeId) => enableRecipe[recipeId])
+    );
+
+    const state: FactoryState = {
+      recipeCosts: Object.keys(enableRecipe)
+        .filter((recipeId) => enableRecipe[recipeId])
+        .reduce(
+          (costs, recipeId) => ({
+            ...costs,
+            [recipeId]: recipeCosts[recipeId] ?? 0,
+          }),
+          {}
+        ),
+      importResources: [
+        ...Array.from(importedResources),
+        ...Object.keys(allowImports).filter(
+          (resourceId) => allowImports[resourceId]
+        ),
+      ].reduce(
+        (importResources, resourceId) => ({
+          ...importResources,
+          [resourceId]: resourceCosts[resourceId],
+        }),
+        {}
+      ),
+      inventory: resourceAmounts,
+      desiredOutput: desiredOutput.reduce(
+        (output, { resourceId, amount }) =>
+          resourceId == null || amount <= 0
+            ? output
+            : { ...output, [resourceId]: amount },
+        {}
+      ),
+    };
+
+    const result = solveFactory(factoryData, state);
+
+    const importAmounts: { [resourceId: string]: number } = {};
+    const recipeAmounts: { [recipeId: string]: number } = {};
+    for (let recipeId of Object.keys(result)) {
+      if (recipeId.startsWith("import:")) {
+        importAmounts[recipeId.substring(7)] = result[recipeId];
+      } else if (recipeId in factoryData.recipes) {
+        recipeAmounts[recipeId] = result[recipeId];
+      }
+    }
+    setImportAmounts(importAmounts);
+    setRecipeAmounts(recipeAmounts);
+  }, [
+    factoryData,
+    enableRecipe,
+    allowImports,
+    desiredOutput,
+    recipeCosts,
+    resourceAmounts,
+    resourceCosts,
+    setImportAmounts,
+    setRecipeAmounts,
+  ]);
+
   if (factoryData == null) {
     return <div>Loading...</div>;
   }
@@ -68,9 +143,13 @@ export function Factory() {
   return (
     <OuterContainer>
       <LeftContainer>
-        <FactoryOutputSelection
+        <FactoryOverview
           factoryData={factoryData}
           enableRecipe={enableRecipe}
+          desiredOutput={desiredOutput}
+          setDesiredOutput={setDesiredOutput}
+          solveFactory={doSolveFactory}
+          clearSolution={() => {}}
         />
         <FactoryGraph
           factoryData={factoryData}

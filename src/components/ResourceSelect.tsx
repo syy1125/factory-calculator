@@ -52,6 +52,10 @@ export function ResourceSelect(props: Props) {
         option != null ? onChange(option.value) : onChange(null)
       }
       styles={{
+        container: (baseStyles) => ({
+          ...baseStyles,
+          flexGrow: 1,
+        }),
         control: (baseStyles) => ({
           ...baseStyles,
           backgroundColor: "#282c34",

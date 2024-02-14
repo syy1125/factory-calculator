@@ -82,7 +82,7 @@ export function solveFactory(
     recipes[recipeId].cost = state.recipeCosts[recipeId];
   }
 
-  const { feasible, result, bounded, ...recipeCounts } = solver.Solve({
+  const { feasible, result, bounded, isIntegral, ...recipeCounts } = solver.Solve({
     optimize: "cost",
     opType: "min",
     constraints,
