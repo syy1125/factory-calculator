@@ -15,6 +15,35 @@ interface Props {
   setEnableRecipe: (recipeId: string, enable: boolean) => void;
 }
 
+const Title = styled.div`
+  position: relative;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  font-size: 24px;
+`;
+
+const AbsoluteButton = styled.button`
+  position: absolute;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  padding: 2px;
+
+  background-color: transparent;
+  transition: background-color 0.1s ease;
+  &:hover {
+    background-color: grey;
+  }
+`;
+
+const ListContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+`;
+
 const RecipeGroupRow = styled.div`
   display: flex;
   flex-direction: row;
@@ -66,6 +95,17 @@ export function FactoryRecipeList(props: Props) {
         )
       ),
     [factoryData, setExpandGroups]
+  );
+
+  const setExpandAll = useCallback(
+    (expand: boolean) =>
+      setExpandGroups((expandGroups) =>
+        Object.keys(expandGroups).reduce(
+          (expandGroups, groupId) => ({ ...expandGroups, [groupId]: expand }),
+          {}
+        )
+      ),
+    [setExpandGroups]
   );
 
   const recipeByGroup = useMemo(
@@ -123,60 +163,77 @@ export function FactoryRecipeList(props: Props) {
 
   return (
     <>
-      {factoryData.recipeGroups.map(({ id, name }) => {
-        // If there are no recipes in the group, ignore the group.
-        if (recipeByGroup[id] == null) return null;
+      <Title>
+        <span>Recipes</span>
+        <AbsoluteButton
+          style={{ right: 0, top: 0 }}
+          onClick={() => setExpandAll(true)}
+        >
+          Expand All
+        </AbsoluteButton>
+        <AbsoluteButton
+          style={{ right: 0, top: 20 }}
+          onClick={() => setExpandAll(false)}
+        >
+          Collapse All
+        </AbsoluteButton>
+      </Title>
+      <ListContainer>
+        {factoryData.recipeGroups.map(({ id, name }) => {
+          // If there are no recipes in the group, ignore the group.
+          if (recipeByGroup[id] == null) return null;
 
-        return (
-          <React.Fragment key={id}>
-            <RecipeGroupRow>
-              <TriStateCheckbox
-                checked={recipeGroupChecked[id]}
-                onChange={(enable) => setEnableRecipeGroup(id, enable)}
-              />
-              <span>{name}</span>
-              <FlexFiller />
-              <ExpandToggle
-                expanded={expandGroups[id]}
-                setExpanded={(expanded) =>
-                  typeof expanded === "function"
-                    ? setExpandGroups((expandGroups) => ({
-                        ...expandGroups,
-                        [id]: expanded(expandGroups[id]),
-                      }))
-                    : setExpandGroup(id, expanded)
-                }
-              />
-            </RecipeGroupRow>
-            {recipeByGroup[id].sort().map((recipeId) => {
-              const recipe = factoryData.recipes[recipeId];
+          return (
+            <React.Fragment key={id}>
+              <RecipeGroupRow>
+                <TriStateCheckbox
+                  checked={recipeGroupChecked[id]}
+                  onChange={(enable) => setEnableRecipeGroup(id, enable)}
+                />
+                <span>{name}</span>
+                <FlexFiller />
+                <ExpandToggle
+                  expanded={expandGroups[id]}
+                  setExpanded={(expanded) =>
+                    typeof expanded === "function"
+                      ? setExpandGroups((expandGroups) => ({
+                          ...expandGroups,
+                          [id]: expanded(expandGroups[id]),
+                        }))
+                      : setExpandGroup(id, expanded)
+                  }
+                />
+              </RecipeGroupRow>
+              {recipeByGroup[id].sort().map((recipeId) => {
+                const recipe = factoryData.recipes[recipeId];
 
-              return (
-                <RecipeRow
-                  key={recipeId}
-                  $hidden={!expandGroups[id]}
-                  $enabled={enableRecipes[recipeId]}
-                >
-                  <RecipeTitle>
-                    <input
-                      type="checkbox"
-                      checked={enableRecipes[recipeId]}
-                      onChange={(e) =>
-                        setEnableRecipe(recipeId, e.target.checked)
-                      }
+                return (
+                  <RecipeRow
+                    key={recipeId}
+                    $hidden={!expandGroups[id]}
+                    $enabled={enableRecipes[recipeId]}
+                  >
+                    <RecipeTitle>
+                      <input
+                        type="checkbox"
+                        checked={enableRecipes[recipeId]}
+                        onChange={(e) =>
+                          setEnableRecipe(recipeId, e.target.checked)
+                        }
+                      />
+                      <span>{recipe.name}</span>
+                    </RecipeTitle>
+                    <RecipeDisplay
+                      factoryData={factoryData}
+                      recipeId={recipeId}
                     />
-                    <span>{recipe.name}</span>
-                  </RecipeTitle>
-                  <RecipeDisplay
-                    factoryData={factoryData}
-                    recipeId={recipeId}
-                  />
-                </RecipeRow>
-              );
-            })}
-          </React.Fragment>
-        );
-      })}
+                  </RecipeRow>
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+      </ListContainer>
     </>
   );
 }

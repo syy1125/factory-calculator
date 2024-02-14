@@ -39,21 +39,33 @@ export function ResourceSelect(props: Props) {
   return (
     <Select
       options={options}
+      value={
+        resourceId != null
+          ? {
+              value: resourceId,
+              label: resources[resourceId].name,
+              icon: resources[resourceId].icon,
+            }
+          : null
+      }
+      onChange={(option) =>
+        option != null ? onChange(option.value) : onChange(null)
+      }
       styles={{
-        control: (baseStyles, state) => ({
+        control: (baseStyles) => ({
           ...baseStyles,
           backgroundColor: "#282c34",
         }),
-        placeholder: (baseStyles, state) => ({
+        placeholder: (baseStyles) => ({
           ...baseStyles,
           fontSize: 16,
           textAlign: "left",
         }),
-        input: (baseStyles, state) => ({
+        input: (baseStyles) => ({
           ...baseStyles,
           fontSize: 16,
         }),
-        menu: (baseStyles, state) => ({
+        menu: (baseStyles) => ({
           ...baseStyles,
           backgroundColor: "#282c34",
         }),
@@ -65,7 +77,12 @@ export function ResourceSelect(props: Props) {
       formatOptionLabel={({ label, icon }) => (
         <OptionLabel>
           {icon != null ? (
-            <img src={process.env.PUBLIC_URL + icon} width={16} height={16} />
+            <img
+              src={process.env.PUBLIC_URL + icon}
+              width={16}
+              height={16}
+              alt={label}
+            />
           ) : null}
           <span>{label}</span>
         </OptionLabel>
