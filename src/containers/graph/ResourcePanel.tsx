@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { FlexFiller } from "./FlexFiller";
-import { ExpandToggle } from "./ExpandToggle";
+import { FlexFiller } from "../../components/FlexFiller";
+import { ExpandToggle } from "../../components/ExpandToggle";
 
 interface Props {
   position: [number, number];

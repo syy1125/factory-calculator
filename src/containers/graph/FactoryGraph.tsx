@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { styled } from "styled-components";
-import { RecipePanel } from "../../components/RecipePanel.tsx";
-import { ResourcePanel } from "../../components/ResourcePanel.tsx";
+import { RecipePanel } from "./RecipePanel.tsx";
+import { ResourcePanel } from "./ResourcePanel.tsx";
 import { type FactoryData } from "../../factory/factory.ts";
 import { getActiveResources } from "../../utils/getActiveResources.ts";
 import { useMapState } from "../../utils/hooks.ts";

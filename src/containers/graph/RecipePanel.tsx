@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { FactoryData } from "../factory/factory";
-import { RecipeDisplay } from "./RecipeDisplay";
+import { FactoryData } from "../../factory/factory";
+import { RecipeDisplay } from "../../components/RecipeDisplay";
 
 interface Props {
   position: [number, number]|null;
