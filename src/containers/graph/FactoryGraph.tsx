@@ -19,6 +19,9 @@ interface Props {
   setResourceCost: (resourceId: string, cost: number) => void;
   allowImports: { [resourceId: string]: boolean };
   setAllowImport: (resourceId: string, allowImport: boolean) => void;
+
+  importAmounts: { [resourceId: string]: number } | null;
+  recipeAmounts: { [recipeId: string]: number } | null;
 }
 
 const GraphContainer = styled.div`
@@ -42,6 +45,9 @@ export function FactoryGraph(props: Props) {
     setResourceCost,
     allowImports,
     setAllowImport,
+
+    importAmounts,
+    recipeAmounts,
   } = props;
 
   const enabledRecipes = useMemo(
@@ -90,6 +96,36 @@ export function FactoryGraph(props: Props) {
     setRecipePositions(targetRecipePositions);
   }, [factoryData, enabledRecipes, setResourcePositions, setRecipePositions]);
 
+  const [producedAmounts, consumedAmounts, remainingAmounts] = useMemo(() => {
+    if (recipeAmounts == null || importAmounts == null)
+      return [null, null, null];
+
+    const produced: { [resourceId: string]: number } = {};
+    const consumed: { [resourceId: string]: number } = {};
+    const remaining: { [resourceId: string]: number } = { ...resourceAmounts };
+
+    for (let resourceId of Object.keys(importAmounts)) {
+      remaining[resourceId] =
+        (remaining[resourceId] ?? 0) + importAmounts[resourceId];
+    }
+
+    for (let recipeId of Object.keys(recipeAmounts)) {
+      const { resourceDelta } = factoryData.recipes[recipeId];
+      for (let resourceId of Object.keys(resourceDelta)) {
+        const delta = resourceDelta[resourceId] * recipeAmounts[recipeId];
+        remaining[resourceId] = (remaining[resourceId] ?? 0) + delta;
+
+        if (delta > 0) {
+          produced[resourceId] = (produced[resourceId] ?? 0) + delta;
+        } else if (delta < 0) {
+          consumed[resourceId] = (consumed[resourceId] ?? 0) - delta;
+        }
+      }
+    }
+
+    return [produced, consumed, remaining];
+  }, [factoryData, recipeAmounts, resourceAmounts, importAmounts]);
+
   return (
     <GraphContainer>
       {Array.from(relevantResources).map((resourceId) => {
@@ -108,14 +144,25 @@ export function FactoryGraph(props: Props) {
             }
             amount={resourceAmounts[resourceId] ?? 0}
             setAmount={setResourceAmount}
-            cost={resourceCosts[resourceId] ?? 0}
+            cost={resourceCosts[resourceId] ?? resource.value}
             setCost={setResourceCost}
+            changed={
+              (resourceAmounts[resourceId] != null &&
+                resourceAmounts[resourceId] !== 0) ||
+              (resourceCosts[resourceId] != null &&
+                resourceCosts[resourceId] !== resource.value) ||
+              (!importedResources.has(resourceId) && allowImports[resourceId])
+            }
             allowImport={
               importedResources.has(resourceId) || allowImports[resourceId]
             }
             setAllowImport={
               importedResources.has(resourceId) ? undefined : setAllowImport
             }
+            imported={importAmounts?.[resourceId]}
+            produced={producedAmounts?.[resourceId]}
+            consumed={consumedAmounts?.[resourceId]}
+            remaining={remainingAmounts?.[resourceId]}
           />
         );
       })}
@@ -126,6 +173,7 @@ export function FactoryGraph(props: Props) {
             position={recipePositions[recipeId]}
             factoryData={factoryData}
             recipeId={recipeId}
+            amount={recipeAmounts?.[recipeId] ?? null}
           />
         );
       })}

@@ -4,15 +4,17 @@ import { FactoryData } from "../../factory/factory";
 import { RecipeDisplay } from "../../components/RecipeDisplay";
 
 interface Props {
-  position: [number, number]|null;
+  position: [number, number] | null;
 
   factoryData: FactoryData;
   recipeId: string;
+
+  amount: number | null;
 }
 
 const Panel = styled.div`
   position: absolute;
-  min-width: 200px;
+  min-width: 250px;
 
   display: flex;
   flex-direction: column;
@@ -24,18 +26,32 @@ const Panel = styled.div`
 `;
 
 const TitleRow = styled.div`
-  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 0.1em;
+  padding-right: 0.1em;
 `;
 
-const RecipeName = styled.div`
-  margin-left: 0.2em;
-  margin-right: 0.2em;
+const RecipeName = styled.span`
+  font-size: 20px;
   user-select: none;
   text-align: left;
 `;
 
+const AmountTag = styled.span`
+  position: relative;
+  font-size: 16px;
+  margin-left: 0.5em;
+  padding: 0px 2px;
+  border-radius: 3px;
+  color: #ffecb3;
+  background-color: #ffab0066;
+`;
+
 export function RecipePanel(props: Props) {
-  const { position, factoryData, recipeId } = props;
+  const { position, factoryData, recipeId, amount } = props;
   const { name } = factoryData.recipes[recipeId];
 
   if (position == null) return null;
@@ -44,6 +60,7 @@ export function RecipePanel(props: Props) {
     <Panel style={{ left: position[0], top: position[1] }}>
       <TitleRow>
         <RecipeName>{name}</RecipeName>
+        {amount != null ? <AmountTag>{amount}</AmountTag> : null}
       </TitleRow>
       <RecipeDisplay factoryData={factoryData} recipeId={recipeId} />
     </Panel>

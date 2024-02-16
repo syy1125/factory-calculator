@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { FactoryData, FactoryState, solveFactory } from "../factory/factory";
 import { getActiveResources } from "../utils/getActiveResources";
-import { useMapState } from "../utils/hooks";
+import { useLocalStorageMapState, useMapState } from "../utils/hooks";
 import { FactoryGraph } from "./graph/FactoryGraph";
 import { FactoryOverview } from "./overview/FactoryOverview";
 import { FactoryRecipeList } from "./recipes/FactoryRecipeList";
+import { useLocalStorage } from "usehooks-ts";
 
 const OuterContainer = styled.div`
   width: 100vw;
@@ -29,19 +30,53 @@ const RightContainer = styled.div`
 
 export function Factory() {
   const [factoryData, setFactoryData] = useState<FactoryData | null>(null);
-  const [resourceAmounts, setResourceAmount] = useMapState<number>();
+  const [resourceAmounts, setResourceAmount] = useLocalStorageMapState<number>(
+    "current-resource-amounts"
+  );
   const [resourceCosts, setResourceCost, setResourceCosts] =
-    useMapState<number>();
-  const [allowImports, setAllowImport] = useMapState<boolean>();
-  const [recipeCosts, setRecipeCost] = useMapState<number>();
-  const [enableRecipe, setEnableRecipe, setEnableRecipes] =
-    useMapState<boolean>();
-  const [desiredOutput, setDesiredOutput] = useState<
-    Array<{ resourceId: string | null; amount: number }>
-  >([]);
+    useLocalStorageMapState<number>("resource-costs");
+  const [allowImports, setAllowImport] =
+    useLocalStorageMapState<boolean>("allow-imports");
+  const [recipeCosts, setRecipeCost] =
+    useLocalStorageMapState<number>("recipe-costs");
 
-  const [importAmounts, , setImportAmounts] = useMapState<number>();
-  const [recipeAmounts, , setRecipeAmounts] = useMapState<number>();
+  const [enableRecipe, setEnableRecipe, setEnableRecipes] =
+    useLocalStorageMapState<boolean>("enable-recipe");
+
+  const [desiredOutput, setDesiredOutput] = useLocalStorage<
+    Array<{ resourceId: string | null; amount: number }>
+  >("desired-output", [], {
+    serializer: JSON.stringify,
+    deserializer: JSON.parse,
+  });
+
+  useEffect(() => {
+    if (factoryData == null) return;
+
+    const { producedResources } = getActiveResources(
+      factoryData,
+      Object.keys(enableRecipe).filter((recipeId) => enableRecipe[recipeId])
+    );
+
+    setDesiredOutput((desiredOutput) =>
+      desiredOutput.map(({ resourceId, ...output }) => {
+        return {
+          resourceId:
+            resourceId != null && producedResources.has(resourceId)
+              ? resourceId
+              : null,
+          ...output,
+        };
+      })
+    );
+  }, [factoryData, enableRecipe, setDesiredOutput]);
+
+  const [importAmounts, setImportAmounts] = useState<{
+    [resourceId: string]: number;
+  } | null>(null);
+  const [recipeAmounts, setRecipeAmounts] = useState<{
+    [recipeId: string]: number;
+  } | null>(null);
 
   useEffect(() => {
     const dataPath = process.env.PUBLIC_URL + "/foxhole/FoxholeFactory.json";
@@ -49,24 +84,16 @@ export function Factory() {
       .then((data) => data.json())
       .then((data: FactoryData) => {
         setFactoryData(data);
-
-        const initialResourceCost: { [resourceId: string]: number } = {};
-        for (let resourceId of Object.keys(data.resources)) {
-          initialResourceCost[resourceId] = data.resources[resourceId].value;
-        }
-        setResourceCosts(initialResourceCost);
-
-        setEnableRecipes(
-          Object.keys(data.recipes).reduce(
-            (enableRecipe, recipeId) => ({
-              ...enableRecipe,
+        setEnableRecipes((enableRecipe) => {
+          return Object.keys(data.recipes).reduce((enabled, recipeId) => {
+            return {
               [recipeId]: true,
-            }),
-            {}
-          )
-        );
+              ...enabled,
+            };
+          }, enableRecipe);
+        });
       });
-  }, [setFactoryData, setEnableRecipes, setResourceCosts]);
+  }, [setFactoryData, setEnableRecipes]);
 
   const doSolveFactory = useCallback(() => {
     if (factoryData == null) {
@@ -97,7 +124,9 @@ export function Factory() {
       ].reduce(
         (importResources, resourceId) => ({
           ...importResources,
-          [resourceId]: resourceCosts[resourceId],
+          [resourceId]:
+            resourceCosts[resourceId] ??
+            factoryData.resources[resourceId].value,
         }),
         {}
       ),
@@ -111,7 +140,11 @@ export function Factory() {
       ),
     };
 
+    console.log("Solving factory for state", state);
+
     const result = solveFactory(factoryData, state);
+
+    console.log("Factory solution", result);
 
     const importAmounts: { [resourceId: string]: number } = {};
     const recipeAmounts: { [recipeId: string]: number } = {};
@@ -134,6 +167,21 @@ export function Factory() {
     resourceCosts,
     setImportAmounts,
     setRecipeAmounts,
+  ]);
+
+  const clearSolution = useCallback(() => {
+    setImportAmounts(null);
+    setRecipeAmounts(null);
+  }, [setImportAmounts, setRecipeAmounts]);
+
+  useEffect(clearSolution, [
+    clearSolution,
+    resourceAmounts,
+    resourceCosts,
+    allowImports,
+    recipeCosts,
+    enableRecipe,
+    desiredOutput,
   ]);
 
   if (factoryData == null) {
@@ -160,6 +208,8 @@ export function Factory() {
           setResourceCost={setResourceCost}
           allowImports={allowImports}
           setAllowImport={setAllowImport}
+          importAmounts={importAmounts}
+          recipeAmounts={recipeAmounts}
         />
       </LeftContainer>
       <RightContainer>

@@ -1,5 +1,10 @@
 import { FactoryData } from "../factory/factory";
 
+/**
+ * `relevantResources` lists all resources that are involved in the given recipes.
+ * `producedResources` lists all resources that can be produced by the given recipes.
+ * `importedResources` lists all resources that must be imported - i.e. no recipe can produce them.
+ */
 export function getActiveResources(
   data: FactoryData,
   enabledRecipes: string[],

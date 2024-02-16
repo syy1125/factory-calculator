@@ -30,8 +30,8 @@ export function ResourceSelect(props: Props) {
         .sort()
         .map((resourceId) => ({
           value: resourceId,
-          label: resources[resourceId].name,
-          icon: resources[resourceId].icon,
+          label: resources[resourceId]?.name,
+          icon: resources[resourceId]?.icon,
         })),
     [resources]
   );
@@ -43,8 +43,8 @@ export function ResourceSelect(props: Props) {
         resourceId != null
           ? {
               value: resourceId,
-              label: resources[resourceId].name,
-              icon: resources[resourceId].icon,
+              label: resources[resourceId]?.name,
+              icon: resources[resourceId]?.icon,
             }
           : null
       }
@@ -68,6 +68,7 @@ export function ResourceSelect(props: Props) {
         input: (baseStyles) => ({
           ...baseStyles,
           fontSize: 16,
+          color: "white",
         }),
         menu: (baseStyles) => ({
           ...baseStyles,

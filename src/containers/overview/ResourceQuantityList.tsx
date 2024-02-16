@@ -24,8 +24,8 @@ const ListItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 const QuantityInput = styled.input`
@@ -44,6 +44,7 @@ const AddResourceButton = styled.button`
   align-self: center;
   border-radius: 5px;
   padding: 2px 5px;
+  margin: 5px;
 
   transition: background-color 0.1s ease;
   &:hover {

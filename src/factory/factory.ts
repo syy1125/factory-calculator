@@ -78,20 +78,23 @@ export function solveFactory(
     };
   }
   for (const recipeId of enabledRecipes) {
-    recipes[recipeId] = data.recipes[recipeId].resourceDelta;
-    recipes[recipeId].cost = state.recipeCosts[recipeId];
+    recipes[recipeId] = {
+      ...data.recipes[recipeId].resourceDelta,
+      cost: state.recipeCosts[recipeId] ?? 0,
+    };
   }
 
-  const { feasible, result, bounded, isIntegral, ...recipeCounts } = solver.Solve({
-    optimize: "cost",
-    opType: "min",
-    constraints,
-    variables: recipes,
-    ints: Object.keys(recipes).reduce(
-      (ints, recipeId) => ({ ...ints, [recipeId]: 1 }),
-      {}
-    ),
-  });
+  const { feasible, result, bounded, isIntegral, ...recipeCounts } =
+    solver.Solve({
+      optimize: "cost",
+      opType: "min",
+      constraints,
+      variables: recipes,
+      ints: Object.keys(recipes).reduce(
+        (ints, recipeId) => ({ ...ints, [recipeId]: 1 }),
+        {}
+      ),
+    });
 
   return recipeCounts;
 }

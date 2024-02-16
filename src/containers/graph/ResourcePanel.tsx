@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { FlexFiller } from "../../components/FlexFiller";
 import { ExpandToggle } from "../../components/ExpandToggle";
@@ -16,6 +16,7 @@ interface Props {
   setCost: (resourceId: string, cost: number) => void;
   allowImport: boolean;
   setAllowImport?: (resourceId: string, allowImport: boolean) => void;
+  changed: boolean;
 
   imported?: number;
   produced?: number;
@@ -23,7 +24,7 @@ interface Props {
   remaining?: number;
 }
 
-const Panel = styled.div`
+const Panel = styled.div<{ $expanded: boolean }>`
   position: absolute;
 
   display: flex;
@@ -32,20 +33,39 @@ const Panel = styled.div`
   border: 2px solid white;
   border-radius: 5px;
   background-color: #282c34;
+  font-size: 12px;
 
-  span {
-    font-size: 12px;
-  }
-
-  input {
-    font-size: 12px;
-  }
+  z-index: ${(props) => (props.$expanded ? 1 : 0)};
 `;
 
 const ResourceName = styled.div`
   font-size: 20px;
   margin-left: 5px;
   user-select: none;
+`;
+
+const OverrideTag = styled.span`
+  border-radius: 2px;
+  border: 1px solid grey;
+  padding: 0px 2px;
+  margin-left: 0.5em;
+`;
+
+const AmountTag = styled.span<{ $delta: number }>`
+  position: relative;
+  font-size: 16px;
+  margin-left: 0.5em;
+  margin-right: 0.2em;
+  padding: 0px 2px;
+  border-radius: 3px;
+  color: ${(props) =>
+    props.$delta > 0 ? "#dcedc8" : props.$delta < 0 ? "#ffccbc" : "#ffecb3"};
+  background-color: ${(props) =>
+    props.$delta > 0
+      ? "#64dd1766"
+      : props.$delta < 0
+      ? "#dd2c0066"
+      : "#ffab0066"};
 `;
 
 const Row = styled.div<{ hidden?: boolean }>`
@@ -79,12 +99,15 @@ export function ResourcePanel(props: Props) {
     resourceId,
     resourceName,
     imagePath,
+
     amount,
     setAmount,
     cost,
     setCost,
     allowImport,
     setAllowImport,
+    changed,
+
     imported,
     produced,
     consumed,
@@ -92,16 +115,28 @@ export function ResourcePanel(props: Props) {
   } = props;
   const [expanded, setExpanded] = useState(false);
 
+  const delta = useMemo(() => {
+    if (produced == null && consumed == null) return null;
+    return (produced ?? 0) - (consumed ?? 0);
+  }, [produced, consumed]);
+
   if (position == null) return null;
 
   return (
-    <Panel style={{ left: position[0], top: position[1] }}>
+    <Panel style={{ left: position[0], top: position[1] }} $expanded={expanded}>
       <Row>
         {imagePath == null ? null : (
           <img src={imagePath} alt={resourceId} width={32} height={32} />
         )}
         <ResourceName>{resourceName}</ResourceName>
+        {changed ? <OverrideTag>changed</OverrideTag> : null}
         <FlexFiller />
+        {delta != null ? (
+          <AmountTag $delta={delta}>
+            {delta > 0 ? "+" : ""}
+            {delta}
+          </AmountTag>
+        ) : null}
         <ExpandToggle expanded={expanded} setExpanded={setExpanded} />
       </Row>
       <Row hidden={!expanded}>
@@ -137,22 +172,22 @@ export function ResourcePanel(props: Props) {
       <Row hidden={!expanded || imported == null}>
         <span>Imported</span>
         <FlexFiller />
-        <NumberInput value={imported} readOnly={true} />
+        <NumberInput value={imported ?? 0} readOnly={true} />
       </Row>
       <Row hidden={!expanded || produced == null}>
         <span>Produced</span>
         <FlexFiller />
-        <NumberInput value={produced} readOnly={true} />
+        <NumberInput value={produced ?? 0} readOnly={true} />
       </Row>
       <Row hidden={!expanded || consumed == null}>
         <span>Consumed</span>
         <FlexFiller />
-        <NumberInput value={consumed} readOnly={true} />
+        <NumberInput value={consumed ?? 0} readOnly={true} />
       </Row>
       <Row hidden={!expanded || remaining == null}>
         <span>Remaining</span>
         <FlexFiller />
-        <NumberInput value={remaining} readOnly={true} />
+        <NumberInput value={remaining ?? 0} readOnly={true} />
       </Row>
     </Panel>
   );
