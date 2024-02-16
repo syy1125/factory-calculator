@@ -129,7 +129,7 @@ export function ResourcePanel(props: Props) {
           <img src={imagePath} alt={resourceId} width={32} height={32} />
         )}
         <ResourceName>{resourceName}</ResourceName>
-        {changed ? <OverrideTag>changed</OverrideTag> : null}
+        {changed ? <OverrideTag>CHG</OverrideTag> : null}
         <FlexFiller />
         {delta != null ? (
           <AmountTag $delta={delta}>

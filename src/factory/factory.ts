@@ -63,10 +63,16 @@ export function solveFactory(
     constraints[resourceId] = { min: 0 };
   }
   for (const resourceId of Object.keys(state.inventory)) {
-    constraints[resourceId] = { min: -state.inventory[resourceId] };
+    constraints[resourceId] =
+      constraints[resourceId] != null
+        ? { min: constraints[resourceId].min - state.inventory[resourceId] }
+        : { min: -state.inventory[resourceId] };
   }
   for (const resourceId of Object.keys(state.desiredOutput)) {
-    constraints[resourceId] = { min: state.desiredOutput[resourceId] };
+    constraints[resourceId] =
+      constraints[resourceId] != null
+        ? { min: constraints[resourceId].min + state.desiredOutput[resourceId] }
+        : { min: state.desiredOutput[resourceId] };
   }
 
   const recipes: { [recipeId: string]: { [variableId: string]: number } } = {};

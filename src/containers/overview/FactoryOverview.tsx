@@ -3,6 +3,7 @@ import { ResourceQuantityList } from "./ResourceQuantityList";
 import { FactoryData } from "../../factory/factory";
 import { getActiveResources } from "../../utils/getActiveResources";
 import styled from "styled-components";
+import { ResourceBox } from "../../components/ResourceBox";
 
 interface Props {
   factoryData: FactoryData;
@@ -11,13 +12,31 @@ interface Props {
   setDesiredOutput: Dispatch<SetStateAction<Props["desiredOutput"]>>;
   solveFactory: () => void;
   clearSolution: () => void;
+  importAmounts: { [resourceId: string]: number } | null;
 }
 
 const Panel = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   padding-bottom: 0.5em;
+  border-bottom: 2px solid white;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: top;
+  justify-content: center;
+`;
+
+const Section = styled.div`
+  flex-basis: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
 `;
 
 const Title = styled.div`
@@ -40,11 +59,25 @@ const Button = styled.button`
   align-self: center;
   border-radius: 5px;
   padding: 2px 5px;
+  margin: 0 0.5em;
 
   transition: background-color 0.1s ease;
   &:hover {
     background-color: grey;
   }
+`;
+
+const FlexRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ImportResourceDisplay = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 `;
 
 export function FactoryOverview(props: Props) {
@@ -54,6 +87,8 @@ export function FactoryOverview(props: Props) {
     desiredOutput,
     setDesiredOutput,
     solveFactory,
+    clearSolution,
+    importAmounts,
   } = props;
 
   const { relevantResources } = useMemo(
@@ -67,19 +102,39 @@ export function FactoryOverview(props: Props) {
 
   return (
     <Panel>
-      <Title>
-        <span>Factory</span>
-      </Title>
-      <Subtitle>
-        <span>Desired Output</span>
-      </Subtitle>
-      <ResourceQuantityList
-        factoryData={factoryData}
-        relevantResourceIds={Array.from(relevantResources)}
-        resourceAmounts={desiredOutput}
-        setResourceAmounts={setDesiredOutput}
-      />
-      <Button onClick={solveFactory}>Solve Factory</Button>
+      <Title>Factory</Title>
+      <Content>
+        <Section>
+          <Subtitle>Production Targets</Subtitle>
+          <ResourceQuantityList
+            factoryData={factoryData}
+            relevantResourceIds={Array.from(relevantResources)}
+            resourceAmounts={desiredOutput}
+            setResourceAmounts={setDesiredOutput}
+          />
+          <FlexRow>
+            <Button onClick={solveFactory}>Solve Factory</Button>
+            <Button onClick={clearSolution}>Reset Solution</Button>
+          </FlexRow>
+        </Section>
+        <Section>
+          <Subtitle>Required Imports</Subtitle>
+          <ImportResourceDisplay>
+            {importAmounts == null ? (
+              <p>Solve the factory to see required imports</p>
+            ) : (
+              Object.keys(importAmounts).map((resourceId) => (
+                <ResourceBox
+                  key={resourceId}
+                  resource={factoryData.resources[resourceId]}
+                  amount={importAmounts[resourceId]}
+                  size={48}
+                />
+              ))
+            )}
+          </ImportResourceDisplay>
+        </Section>
+      </Content>
     </Panel>
   );
 }

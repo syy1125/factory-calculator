@@ -197,7 +197,8 @@ export function Factory() {
           desiredOutput={desiredOutput}
           setDesiredOutput={setDesiredOutput}
           solveFactory={doSolveFactory}
-          clearSolution={() => {}}
+          clearSolution={clearSolution}
+          importAmounts={importAmounts}
         />
         <FactoryGraph
           factoryData={factoryData}
