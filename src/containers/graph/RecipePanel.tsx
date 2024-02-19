@@ -1,10 +1,14 @@
-import React from "react";
+import { useDndMonitor, useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import styled from "styled-components";
-import { FactoryData } from "../../factory/factory";
 import { RecipeDisplay } from "../../components/RecipeDisplay";
+import { FactoryData } from "../../factory/factory";
 
 interface Props {
   position: [number, number] | null;
+  setPosition: (recipeId: string, position: [number, number]) => void;
+
+  linkElementRef: (recipeId: string, element: HTMLElement | null) => void;
 
   factoryData: FactoryData;
   recipeId: string;
@@ -21,7 +25,6 @@ const Panel = styled.div`
   align-items: stretch;
   border: 2px solid white;
   border-radius: 5px;
-  padding: 2px;
   background-color: #282c34;
 `;
 
@@ -30,8 +33,8 @@ const TitleRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-left: 0.1em;
-  padding-right: 0.1em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
 `;
 
 const RecipeName = styled.span`
@@ -51,14 +54,47 @@ const AmountTag = styled.span`
 `;
 
 export function RecipePanel(props: Props) {
-  const { position, factoryData, recipeId, amount } = props;
+  const {
+    position,
+    setPosition,
+    linkElementRef,
+    factoryData,
+    recipeId,
+    amount,
+  } = props;
   const { name } = factoryData.recipes[recipeId];
+
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: `recipe-${recipeId}`,
+  });
+
+  useDndMonitor({
+    onDragEnd: (e) => {
+      if (e.active.id === `recipe-${recipeId}`) {
+        setPosition(recipeId, [
+          (position?.[0] ?? 0) + e.delta.x,
+          (position?.[1] ?? 0) + e.delta.y,
+        ]);
+      }
+    },
+  });
 
   if (position == null) return null;
 
   return (
-    <Panel style={{ left: position[0], top: position[1] }}>
-      <TitleRow>
+    <Panel
+      style={{
+        left: position[0],
+        top: position[1],
+        transform: CSS.Transform.toString(transform),
+      }}
+      ref={setNodeRef}
+    >
+      <TitleRow
+        {...attributes}
+        {...listeners}
+        ref={(element) => linkElementRef(recipeId, element)}
+      >
         <RecipeName>{name}</RecipeName>
         {amount != null ? <AmountTag>{amount}</AmountTag> : null}
       </TitleRow>

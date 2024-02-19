@@ -2,9 +2,13 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { FlexFiller } from "../../components/FlexFiller";
 import { ExpandToggle } from "../../components/ExpandToggle";
+import { useDndMonitor, useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
-  position: [number, number];
+  position: [number, number] | null;
+  setPosition: (resourceId: string, position: [number, number]) => void;
+  linkElementRef: (resourceId: string, element: HTMLElement | null) => void;
 
   resourceId: string;
   resourceName: string;
@@ -96,6 +100,8 @@ const NumberInput = styled.input`
 export function ResourcePanel(props: Props) {
   const {
     position,
+    setPosition,
+    linkElementRef,
     resourceId,
     resourceName,
     imagePath,
@@ -120,15 +126,47 @@ export function ResourcePanel(props: Props) {
     return (produced ?? 0) - (consumed ?? 0);
   }, [produced, consumed]);
 
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: `resource-${resourceId}`,
+  });
+
+  useDndMonitor({
+    onDragEnd: (e) => {
+      if (e.active.id === `resource-${resourceId}`) {
+        setPosition(resourceId, [
+          (position?.[0] ?? 0) + e.delta.x,
+          (position?.[1] ?? 0) + e.delta.y,
+        ]);
+      }
+    },
+  });
+
   if (position == null) return null;
 
   return (
-    <Panel style={{ left: position[0], top: position[1] }} $expanded={expanded}>
-      <Row>
+    <Panel
+      style={{
+        left: position[0],
+        top: position[1],
+        transform: CSS.Translate.toString(transform),
+      }}
+      ref={setNodeRef}
+      $expanded={expanded}
+    >
+      <Row ref={(element) => linkElementRef(resourceId, element)}>
         {imagePath == null ? null : (
-          <img src={imagePath} alt={resourceId} width={32} height={32} />
+          <img
+            src={imagePath}
+            alt={resourceId}
+            width={32}
+            height={32}
+            {...attributes}
+            {...listeners}
+          />
         )}
-        <ResourceName>{resourceName}</ResourceName>
+        <ResourceName {...attributes} {...listeners}>
+          {resourceName}
+        </ResourceName>
         {changed ? <OverrideTag>CHG</OverrideTag> : null}
         <FlexFiller />
         {delta != null ? (
