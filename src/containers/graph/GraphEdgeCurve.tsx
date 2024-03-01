@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
 const Canvas = styled.canvas`
   position: absolute;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.4;
 `;
 
 const TextContainer = styled.div`
@@ -21,7 +21,7 @@ const TextContainer = styled.div`
   pointer-events: none;
   font-size: 16px;
   color: #fff;
-  opacity: 0.6;
+  opacity: 0.4;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,6 +32,7 @@ const TextContainer = styled.div`
     border-radius: 5px;
     padding: 2px;
     pointer-events: all;
+    user-select: none;
   }
 `;
 

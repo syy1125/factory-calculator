@@ -19,6 +19,7 @@ interface Props {
 const Panel = styled.div<{ $recipeId: string }>`
   position: absolute;
   min-width: 250px;
+  z-index: 1;
 
   display: flex;
   flex-direction: column;
@@ -30,6 +31,17 @@ const Panel = styled.div<{ $recipeId: string }>`
   &:hover ~.recipe-${(props) => props.$recipeId} {
     opacity: 1;
     color: gold;
+    z-index: 20;
+  }
+
+  &:after { // Ensures a bit of padding for scrolling
+    position: absolute;
+    content: '';
+    bottom: -20px;
+    right: -20px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
   }
 `;
 
@@ -102,7 +114,7 @@ export function RecipePanel(props: Props) {
         ref={(element) => linkElementRef(recipeId, element)}
       >
         <RecipeName>{name}</RecipeName>
-        {amount != null ? <AmountTag>{amount}</AmountTag> : null}
+        {amount != null ? <AmountTag>{amount.toLocaleString()}</AmountTag> : null}
       </TitleRow>
       <RecipeDisplay factoryData={factoryData} recipeId={recipeId} />
     </Panel>

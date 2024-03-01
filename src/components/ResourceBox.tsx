@@ -34,7 +34,7 @@ const ResourceNameTooltip = styled.span`
   position: absolute;
   padding: 2px;
   opacity: 0;
-  z-index: 1;
+  z-index: 100;
   background-color: #000c;
   user-select: none;
   pointer-events: none;
@@ -65,7 +65,7 @@ export function ResourceBox(props: Props) {
         height={size}
         alt={resource.name}
       />
-      <AmountTag>{amount}</AmountTag>
+      <AmountTag>{amount.toLocaleString()}</AmountTag>
       <ResourceNameTooltip>{resource.name}</ResourceNameTooltip>
     </ResourceContainer>
   );

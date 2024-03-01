@@ -1,14 +1,14 @@
-import { useEffect, useMemo, useRef } from "react";
+import { DndContext } from "@dnd-kit/core";
+import { useMemo, useRef } from "react";
 import { styled } from "styled-components";
-import { RecipePanel } from "./RecipePanel.tsx";
-import { ResourcePanel } from "./ResourcePanel.tsx";
 import { type FactoryData } from "../../factory/factory.ts";
 import { getActiveResources } from "../../utils/getActiveResources.ts";
 import { useMapState } from "../../utils/hooks.ts";
 import { recipeSort } from "../../utils/recipeSort.ts";
-import simpleFrame from "./SimpleFrame.png";
-import { DndContext } from "@dnd-kit/core";
 import { GraphEdgeCurve } from "./GraphEdgeCurve.tsx";
+import { RecipePanel } from "./RecipePanel.tsx";
+import { ResourcePanel } from "./ResourcePanel.tsx";
+import simpleFrame from "./SimpleFrame.png";
 
 interface Props {
   factoryData: FactoryData;
@@ -63,10 +63,31 @@ export function FactoryGraph(props: Props) {
     [factoryData, enabledRecipes]
   );
 
-  const [resourcePositions, setResourcePosition, setResourcePositions] =
+  const [resourcePositions, setResourcePosition] =
     useMapState<[number, number]>();
-  const [recipePositions, setRecipePosition, setRecipePositions] =
-    useMapState<[number, number]>();
+  const [recipePositions, setRecipePosition] = useMapState<[number, number]>();
+
+  const [defaultResourcePositions, defaultRecipePositions] = useMemo(() => {
+    const [sortedResources, sortedRecipes] = recipeSort(
+      factoryData,
+      enabledRecipes
+    );
+
+    const resourcePositions: { [resourceId: string]: [number, number] } = {};
+    for (let i = 0; i < sortedResources.length; i++) {
+      for (let j = 0; j < sortedResources[i].length; j++) {
+        resourcePositions[sortedResources[i][j]] = [i * 800 + 20, j * 150 + 20];
+      }
+    }
+    const recipePositions: { [recipeId: string]: [number, number] } = {};
+    for (let i = 0; i < sortedRecipes.length; i++) {
+      for (let j = 0; j < sortedRecipes[i].length; j++) {
+        recipePositions[sortedRecipes[i][j]] = [i * 800 + 400, j * 150 + 20];
+      }
+    }
+
+    return [resourcePositions, recipePositions];
+  }, [factoryData, enabledRecipes]);
 
   const containerRef = useRef<HTMLElement | null>(null);
   const resourcePanelRefs = useRef<{
@@ -75,36 +96,6 @@ export function FactoryGraph(props: Props) {
   const recipePanelRefs = useRef<{ [recipeId: string]: HTMLElement | null }>(
     {}
   );
-
-  useEffect(() => {
-    const [sortedResources, sortedRecipes] = recipeSort(
-      factoryData,
-      enabledRecipes
-    );
-
-    const targetResourcePositions: { [resourceId: string]: [number, number] } =
-      {};
-    for (let i = 0; i < sortedResources.length; i++) {
-      for (let j = 0; j < sortedResources[i].length; j++) {
-        targetResourcePositions[sortedResources[i][j]] = [
-          i * 800 + 20,
-          j * 150 + 20,
-        ];
-      }
-    }
-    const targetRecipePositions: { [recipeId: string]: [number, number] } = {};
-    for (let i = 0; i < sortedRecipes.length; i++) {
-      for (let j = 0; j < sortedRecipes[i].length; j++) {
-        targetRecipePositions[sortedRecipes[i][j]] = [
-          i * 800 + 400,
-          j * 150 + 20,
-        ];
-      }
-    }
-
-    setResourcePositions(targetResourcePositions);
-    setRecipePositions(targetRecipePositions);
-  }, [factoryData, enabledRecipes, setResourcePositions, setRecipePositions]);
 
   const [producedAmounts, consumedAmounts, remainingAmounts] = useMemo(() => {
     if (recipeAmounts == null || importAmounts == null)
@@ -182,7 +173,7 @@ export function FactoryGraph(props: Props) {
             value:
               recipeAmount == null
                 ? null
-                : (-(recipeAmount * resourceDelta[resourceId])).toString(),
+                : (-(recipeAmount * resourceDelta[resourceId])).toLocaleString(),
           });
         } else if (resourceDelta[resourceId] > 0) {
           edges.push({
@@ -201,7 +192,7 @@ export function FactoryGraph(props: Props) {
             value:
               recipeAmount == null
                 ? null
-                : (recipeAmount * resourceDelta[resourceId]).toString(),
+                : (recipeAmount * resourceDelta[resourceId]).toLocaleString(),
           });
         }
       }
@@ -227,7 +218,10 @@ export function FactoryGraph(props: Props) {
           return (
             <ResourcePanel
               key={resourceId}
-              position={resourcePositions[resourceId]}
+              position={
+                resourcePositions[resourceId] ??
+                defaultResourcePositions[resourceId]
+              }
               setPosition={setResourcePosition}
               linkElementRef={(resourceId, element) =>
                 (resourcePanelRefs.current[resourceId] = element)
@@ -267,7 +261,9 @@ export function FactoryGraph(props: Props) {
           return (
             <RecipePanel
               key={recipeId}
-              position={recipePositions[recipeId]}
+              position={
+                recipePositions[recipeId] ?? defaultRecipePositions[recipeId]
+              }
               setPosition={setRecipePosition}
               linkElementRef={(recipeId, element) =>
                 (recipePanelRefs.current[recipeId] = element)

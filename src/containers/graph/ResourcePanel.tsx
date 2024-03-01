@@ -39,11 +39,22 @@ const Panel = styled.div<{ $expanded: boolean; $resourceId: string }>`
   background-color: #282c34;
   font-size: 12px;
 
-  z-index: ${(props) => (props.$expanded ? 1 : 0)};
+  z-index: ${(props) => (props.$expanded ? 10 : 1)};
 
   &:hover ~ .resource-${(props) => props.$resourceId} {
     opacity: 1;
     color: gold;
+    z-index: 20;
+  }
+
+  &:after { // Ensures a bit of padding for scrolling
+    position: absolute;
+    content: '';
+    bottom: -20px;
+    right: -20px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
   }
 `;
 
@@ -178,7 +189,7 @@ export function ResourcePanel(props: Props) {
         {delta != null ? (
           <AmountTag $delta={delta}>
             {delta > 0 ? "+" : ""}
-            {delta}
+            {delta.toLocaleString()}
           </AmountTag>
         ) : null}
         <ExpandToggle expanded={expanded} setExpanded={setExpanded} />
