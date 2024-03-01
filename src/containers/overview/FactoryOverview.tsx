@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
-import { ResourceQuantityList } from "./ResourceQuantityList";
-import { FactoryData } from "../../factory/factory";
-import { getActiveResources } from "../../utils/getActiveResources";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import styled from "styled-components";
 import { ResourceBox } from "../../components/ResourceBox";
+import { FactoryData } from "../../factory/factory";
+import { getActiveResources } from "../../utils/getActiveResources";
+import { ResourceQuantityList } from "./ResourceQuantityList";
 
 interface Props {
   factoryData: FactoryData;

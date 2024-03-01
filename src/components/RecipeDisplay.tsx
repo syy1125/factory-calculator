@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { styled } from "styled-components";
-import { FactoryData, ResourceData } from "../factory/factory";
+import { FactoryData } from "../factory/factory";
 import arrowRight from "../icons/arrow_right.png";
 import { ResourceBox } from "./ResourceBox";
 

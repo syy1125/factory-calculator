@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { FactoryData } from "../../factory/factory";
 import styled from "styled-components";
-import { TriStateCheckbox } from "../../components/TriStateCheckbox";
-import { FlexFiller } from "../../components/FlexFiller";
 import { ExpandToggle } from "../../components/ExpandToggle";
-import { useMapState } from "../../utils/hooks";
+import { FlexFiller } from "../../components/FlexFiller";
 import { RecipeDisplay } from "../../components/RecipeDisplay";
+import { TriStateCheckbox } from "../../components/TriStateCheckbox";
+import { FactoryData } from "../../factory/factory";
+import { useMapState } from "../../utils/hooks";
 
 interface Props {
   factoryData: FactoryData;
@@ -78,8 +78,6 @@ const RecipeTitle = styled.div`
 export function FactoryRecipeList(props: Props) {
   const {
     factoryData,
-    recipeCosts,
-    setRecipeCost,
     enableRecipes,
     setEnableRecipe,
   } = props;

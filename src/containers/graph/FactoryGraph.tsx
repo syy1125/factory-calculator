@@ -173,7 +173,9 @@ export function FactoryGraph(props: Props) {
             value:
               recipeAmount == null
                 ? null
-                : (-(recipeAmount * resourceDelta[resourceId])).toLocaleString(),
+                : (-(
+                    recipeAmount * resourceDelta[resourceId]
+                  )).toLocaleString(),
           });
         } else if (resourceDelta[resourceId] > 0) {
           edges.push({
@@ -199,6 +201,8 @@ export function FactoryGraph(props: Props) {
     }
 
     return edges;
+    // resourcePositons and recipePositions are indeed needed in the dependency array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     factoryData,
     enabledRecipes,

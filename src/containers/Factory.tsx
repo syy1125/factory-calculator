@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+import { useLocalStorage } from "usehooks-ts";
 import { FactoryData, FactoryState, solveFactory } from "../factory/factory";
 import { getActiveResources } from "../utils/getActiveResources";
-import { useLocalStorageMapState, useMapState } from "../utils/hooks";
+import { useLocalStorageMapState } from "../utils/hooks";
 import { FactoryGraph } from "./graph/FactoryGraph";
 import { FactoryOverview } from "./overview/FactoryOverview";
 import { FactoryRecipeList } from "./recipes/FactoryRecipeList";
-import { useLocalStorage } from "usehooks-ts";
 
 const OuterContainer = styled.div`
   width: 100vw;
@@ -33,7 +33,7 @@ export function Factory() {
   const [resourceAmounts, setResourceAmount] = useLocalStorageMapState<number>(
     "current-resource-amounts"
   );
-  const [resourceCosts, setResourceCost, setResourceCosts] =
+  const [resourceCosts, setResourceCost] =
     useLocalStorageMapState<number>("resource-costs");
   const [allowImports, setAllowImport] =
     useLocalStorageMapState<boolean>("allow-imports");
