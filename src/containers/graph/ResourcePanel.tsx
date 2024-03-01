@@ -28,7 +28,7 @@ interface Props {
   remaining?: number;
 }
 
-const Panel = styled.div<{ $expanded: boolean }>`
+const Panel = styled.div<{ $expanded: boolean; $resourceId: string }>`
   position: absolute;
 
   display: flex;
@@ -40,6 +40,11 @@ const Panel = styled.div<{ $expanded: boolean }>`
   font-size: 12px;
 
   z-index: ${(props) => (props.$expanded ? 1 : 0)};
+
+  &:hover ~ .resource-${(props) => props.$resourceId} {
+    opacity: 1;
+    color: gold;
+  }
 `;
 
 const ResourceName = styled.div`
@@ -145,12 +150,13 @@ export function ResourcePanel(props: Props) {
 
   return (
     <Panel
+      ref={setNodeRef}
       style={{
         left: position[0],
         top: position[1],
         transform: CSS.Translate.toString(transform),
       }}
-      ref={setNodeRef}
+      $resourceId={resourceId}
       $expanded={expanded}
     >
       <Row ref={(element) => linkElementRef(resourceId, element)}>

@@ -139,6 +139,7 @@ export function FactoryGraph(props: Props) {
   const edgeCurves = useMemo(() => {
     const edges: Array<{
       id: string;
+      classes: string[];
       begin: [number, number];
       end: [number, number];
       value: string | null;
@@ -162,9 +163,12 @@ export function FactoryGraph(props: Props) {
         if (resourcePanel == null) continue;
         const resourcePanelRect = resourcePanel.getBoundingClientRect();
 
+        const classes = [`resource-${resourceId}`, `recipe-${recipeId}`];
+
         if (resourceDelta[resourceId] < 0) {
           edges.push({
             id: `${recipeId}-${resourceId}`,
+            classes,
             begin: [
               resourcePanelRect.left + leftCorrection + resourcePanelRect.width,
               resourcePanelRect.top +
@@ -183,6 +187,7 @@ export function FactoryGraph(props: Props) {
         } else if (resourceDelta[resourceId] > 0) {
           edges.push({
             id: `${recipeId}-${resourceId}`,
+            classes,
             begin: [
               recipePanelRect.left + leftCorrection + recipePanelRect.width,
               recipePanelRect.top + topCorrection + recipePanelRect.height / 2,
@@ -276,6 +281,7 @@ export function FactoryGraph(props: Props) {
         {edgeCurves.map((curve) => (
           <GraphEdgeCurve
             key={curve.id}
+            classes={curve.classes}
             begin={curve.begin}
             end={curve.end}
             value={curve.value ?? undefined}

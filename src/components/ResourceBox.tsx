@@ -27,6 +27,7 @@ const AmountTag = styled.span`
   bottom: 0;
   padding: 1px 2px;
   background-color: #0008;
+  font-size: 12px;
 `;
 
 const ResourceNameTooltip = styled.span`

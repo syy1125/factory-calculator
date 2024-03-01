@@ -16,7 +16,7 @@ interface Props {
   amount: number | null;
 }
 
-const Panel = styled.div`
+const Panel = styled.div<{ $recipeId: string }>`
   position: absolute;
   min-width: 250px;
 
@@ -26,6 +26,11 @@ const Panel = styled.div`
   border: 2px solid white;
   border-radius: 5px;
   background-color: #282c34;
+
+  &:hover ~.recipe-${(props) => props.$recipeId} {
+    opacity: 1;
+    color: gold;
+  }
 `;
 
 const TitleRow = styled.div`
@@ -89,6 +94,7 @@ export function RecipePanel(props: Props) {
         transform: CSS.Transform.toString(transform),
       }}
       ref={setNodeRef}
+      $recipeId={recipeId}
     >
       <TitleRow
         {...attributes}

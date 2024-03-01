@@ -1,7 +1,9 @@
+import classNames from "classnames";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 interface Props {
+  classes: string[];
   begin: [number, number];
   end: [number, number];
   lineWidth?: number;
@@ -11,20 +13,22 @@ interface Props {
 const Canvas = styled.canvas`
   position: absolute;
   pointer-events: none;
+  opacity: 0.6;
 `;
 
 const TextContainer = styled.div`
   position: absolute;
   pointer-events: none;
   font-size: 16px;
-  color: #fff8;
+  color: #fff;
+  opacity: 0.6;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
   & > span {
-    background-color: #0008;
+    background-color: #000;
     border-radius: 5px;
     padding: 2px;
     pointer-events: all;
@@ -33,6 +37,7 @@ const TextContainer = styled.div`
 
 export function GraphEdgeCurve(props: Props) {
   const {
+    classes,
     begin: [beginX, beginY],
     end: [endX, endY],
     lineWidth = 2,
@@ -61,7 +66,7 @@ export function GraphEdgeCurve(props: Props) {
       endY - minY + lineWidth / 2
     );
     ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = "#fff8";
+    ctx.strokeStyle = "#fff";
     ctx.stroke();
   }, [beginX, beginY, endX, endY, minX, minY, lineWidth]);
 
@@ -69,12 +74,14 @@ export function GraphEdgeCurve(props: Props) {
     <>
       <Canvas
         ref={canvasRef}
+        className={classNames(classes)}
         style={{ left: minX, top: minY - lineWidth / 2 }}
         width={Math.abs(endX - beginX)}
         height={Math.abs(endY - beginY) + lineWidth}
       />
       {value != null ? (
         <TextContainer
+          className={classNames(classes)}
           style={{
             left: minX,
             top: minY,
