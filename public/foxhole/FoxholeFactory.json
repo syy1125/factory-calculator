@@ -337,7 +337,7 @@
       "power": 2,
       "resourceDelta": {
         "salvage": -15,
-        "petrol": -25,
+        "petrol": -50,
         "assembly-materials-2": 1
       }
     },
